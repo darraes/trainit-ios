@@ -1,2 +1,4 @@
 # Google App Engine generated folder
-appengine-generated/
+Pods/
+Trainit/GoogleService-Info.plist
+Podfile.lock
