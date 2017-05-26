@@ -23,7 +23,7 @@ class WorkoutPlanTableViewController: UITableViewController {
     let workoutRef = Database.database().reference(withPath: "workout-plans/1/current")
     
     var workoutPlan: WorkoutPlan!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -40,23 +40,23 @@ class WorkoutPlanTableViewController: UITableViewController {
         if let workoutPlan = WorkoutManager.Instance.workoutPlan {
             self.workoutPlan = workoutPlan
         }
-
+        
         // Uncomment the following line to preserve selection between
         // presentations
         // self.clearsSelectionOnViewWillAppear = false
-
+        
         // Uncomment the following line to display an Edit button in the
         // navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
     // MARK: - Table view data source
-
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         if (self.workoutPlan === nil) {
             return 0;
@@ -64,7 +64,7 @@ class WorkoutPlanTableViewController: UITableViewController {
         
         return 1
     }
-
+    
     override func tableView(_ tableView: UITableView,
                             numberOfRowsInSection section: Int) -> Int {
         if (self.workoutPlan === nil) {
@@ -73,7 +73,7 @@ class WorkoutPlanTableViewController: UITableViewController {
         
         return workoutPlan.workoutCount()
     }
-
+    
     
     override func tableView(_ tableView: UITableView,
                             cellForRowAt indexPath: IndexPath)
@@ -101,7 +101,7 @@ class WorkoutPlanTableViewController: UITableViewController {
                 blue: CGFloat(activity.themeColorRgb.blue),
                 alpha: 1.0)
             self.showCheckboxIfCompleted(cell, workout)
-
+            
             return cell
     }
     
@@ -117,51 +117,42 @@ class WorkoutPlanTableViewController: UITableViewController {
         }
     }
     
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
+    
+    override func tableView(_ tableView: UITableView,
+                            canEditRowAt indexPath: IndexPath)
+        -> Bool {
+            return true
     }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+    
+    override func tableView(_ tableView: UITableView,
+                            editActionsForRowAt: IndexPath)
+        -> [UITableViewRowAction]? {
+            let more = UITableViewRowAction(style: .normal, title: "More")
+            { action, index in
+                defer { self.tableView.isEditing = false }
+                print("more button tapped")
+            }
+            more.backgroundColor = .lightGray
+            
+            let favorite = UITableViewRowAction(style: .normal, title: "Favorite")
+            { action, index in
+                defer { self.tableView.isEditing = false }
+                print("favorite button tapped")
+            }
+            favorite.backgroundColor = .orange
+            
+            return [favorite, more]
     }
-    */
-
+    
     /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little
-    // preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little
+     // preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destinationViewController.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
 }

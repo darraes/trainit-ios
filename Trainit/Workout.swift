@@ -15,12 +15,14 @@ class Workout {
     let type: String
     let sessionsPerWeek: Int
     var completed: Int
+    var plan: WorkoutPlan?
     
     init(id: String, type: String, sessionsPerWeek: Int, completed: Int) {
         self.id = id
         self.type = type
         self.sessionsPerWeek = sessionsPerWeek
         self.completed = completed
+        self.plan = nil
     }
     
     init(_ snapshot: DataSnapshot) {
@@ -31,7 +33,21 @@ class Workout {
         self.completed = workout["completed"] as! Int
     }
     
+    func setOwnerPlan(_ plan: WorkoutPlan) {
+        self.plan = plan
+    }
+    
+    func save() {
+        // The reference lives in the wrapping plan so we saved it from there
+        self.plan!.save()
+    }
+    
     func toAnyObject() -> Any {
-        return []
+        return [
+            "id": self.id,
+            "type": self.type,
+            "completed": self.completed,
+            "sessions_per_week": self.sessionsPerWeek
+        ]
     }
 }

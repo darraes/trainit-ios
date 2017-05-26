@@ -37,13 +37,23 @@ class WorkoutPlan {
         
         let workouts = snapshot.childSnapshot(forPath: "workouts")
         for workout in workouts.children {
-            self.add(workout: Workout(workout as! DataSnapshot))
+            let myWorkout = Workout(workout as! DataSnapshot)
+            myWorkout.setOwnerPlan(self)
+            self.add(workout: myWorkout)
         }
         sortOnCompletion()
     }
     
     func toAnyObject() -> Any {
-        return []
+        var myWorkouts: [Any] = []
+        for workout in self.workouts{
+            myWorkouts.append(workout.toAnyObject())
+        }
+        
+        return [
+            "id": self.id,
+            "workouts": myWorkouts
+        ]
     }
     
     func add(workout: Workout) {
@@ -55,10 +65,20 @@ class WorkoutPlan {
         return self.workouts.count
     }
     
+    func save() {
+        self.ref?.setValue(self.toAnyObject())
+    }
+    
     func sortOnCompletion() {
         self.workouts.sort(by:{ (left, right) in
-            return (left.sessionsPerWeek - left.completed)
-                    > (right.sessionsPerWeek - right.completed)
+            let leftDelta = left.sessionsPerWeek - left.completed
+            let rightDelta = right.sessionsPerWeek - right.completed
+            
+            if leftDelta == rightDelta {
+                return left.completed < right.completed
+            }
+            
+            return leftDelta > rightDelta
         })
     }
 }
