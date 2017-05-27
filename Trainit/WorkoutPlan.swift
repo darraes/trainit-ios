@@ -12,21 +12,9 @@ import Firebase
 class WorkoutPlan {
     
     let id: String
+    let startDate: Date
     var workouts: [Workout]
     let ref: DatabaseReference?
-    
-    init(id: String) {
-        self.id = id
-        self.workouts = []
-        self.ref = nil
-    }
-    
-    init(id: String, workouts: [Workout]) {
-        self.id = id
-        self.workouts = workouts
-        self.ref = nil
-        sortOnCompletion()
-    }
     
     init(_ snapshot: DataSnapshot) {
         self.workouts = []
@@ -34,6 +22,8 @@ class WorkoutPlan {
         
         let plan = snapshot.value as! [String: AnyObject]
         self.id = plan["id"] as! String
+        self.startDate = date(for: plan["start-date"] as! String)
+
         
         let workouts = snapshot.childSnapshot(forPath: "workouts")
         for workout in workouts.children {
@@ -41,7 +31,8 @@ class WorkoutPlan {
             myWorkout.setOwnerPlan(self)
             self.add(workout: myWorkout)
         }
-        sortOnCompletion()
+        // TODO figure out the sorting experience
+        // sortOnCompletion()
     }
     
     func toAnyObject() -> Any {
@@ -50,15 +41,16 @@ class WorkoutPlan {
             myWorkouts.append(workout.toAnyObject())
         }
         
+        let start = dateStr(for: self.startDate)
         return [
             "id": self.id,
-            "workouts": myWorkouts
+            "workouts": myWorkouts,
+            "start-date": start
         ]
     }
     
     func add(workout: Workout) {
         self.workouts.append(workout)
-        sortOnCompletion()
     }
     
     func workoutCount() -> Int {
@@ -71,11 +63,11 @@ class WorkoutPlan {
     
     func sortOnCompletion() {
         self.workouts.sort(by:{ (left, right) in
-            let leftDelta = left.sessionsPerWeek - left.completedSessions
-            let rightDelta = right.sessionsPerWeek - right.completedSessions
+            let leftDelta = left.sessionsPerWeek - left.getSessionsCompleted()
+            let rightDelta = right.sessionsPerWeek - right.getSessionsCompleted()
             
             if leftDelta == rightDelta {
-                return left.completedSessions < right.completedSessions
+                return left.getSessionsCompleted() < right.getSessionsCompleted()
             }
             
             return leftDelta > rightDelta

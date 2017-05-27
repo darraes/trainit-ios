@@ -14,23 +14,22 @@ class Workout {
     let id: String
     let type: String
     let sessionsPerWeek: Int
-    var completedSessions: Int
+    var completions: [Date]
     var plan: WorkoutPlan?
-    
-    init(id: String, type: String, sessionsPerWeek: Int, completed: Int) {
-        self.id = id
-        self.type = type
-        self.sessionsPerWeek = sessionsPerWeek
-        self.completedSessions = completed
-        self.plan = nil
-    }
     
     init(_ snapshot: DataSnapshot) {
         let workout = snapshot.value as! [String: AnyObject]
         self.id = workout["id"] as! String
         self.type = workout["type"] as! String
         self.sessionsPerWeek = workout["sessions_per_week"] as! Int
-        self.completedSessions = workout["completed"] as! Int
+        self.completions = []
+        
+        let completionsStr = workout["completions"] as? [String]
+        if (completionsStr != nil) {
+            for completion in completionsStr! {
+                self.completions.append(date(for: completion))
+            }
+        }
     }
     
     func setOwnerPlan(_ plan: WorkoutPlan) {
@@ -43,27 +42,41 @@ class Workout {
     }
     
     func toAnyObject() -> Any {
+        var myCompletions: [String] = []
+        for completion in self.completions {
+            myCompletions.append(dateStr(for: completion))
+        }
         return [
             "id": self.id,
             "type": self.type,
-            "completed": self.completedSessions,
-            "sessions_per_week": self.sessionsPerWeek
+            "sessions_per_week": self.sessionsPerWeek,
+            "completions": myCompletions
         ]
     }
     
     func getSessionsCompleted() -> Int {
-        return self.completedSessions
+        return self.completions.count
     }
     
     func allCompleted() -> Bool {
-        return self.completedSessions >= self.sessionsPerWeek
+        return self.completions.count >= self.sessionsPerWeek
     }
     
     func completeOneSession() {
-        self.completedSessions += 1
+        if self.completions.count == self.sessionsPerWeek {
+            // TODO logging
+            return
+        }
+        
+        self.completions.append(Date())
     }
     
     func revertOneSession() {
-        self.completedSessions -= 1
+        if self.completions.count == 0 {
+            // TODO logging
+            return
+        }
+        
+        self.completions.removeLast()
     }
 }

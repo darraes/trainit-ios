@@ -22,11 +22,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Trainit/WorkoutPlan.swift"
-            timestampString = "517460380.468916"
+            timestampString = "517608850.716405"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "44"
-            endingLineNumber = "44"
+            startingLineNumber = "34"
+            endingLineNumber = "34"
             landmarkName = "init(_:)"
             landmarkType = "7">
          </BreakpointContent>

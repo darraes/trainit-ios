@@ -81,6 +81,10 @@ class WorkoutPlanTableViewController: UITableViewController {
         return workoutPlan.workoutCount()
     }
     
+    override func tableView(_ tableView: UITableView,
+                            heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50.0
+    }
     
     override func tableView(_ tableView: UITableView,
                             cellForRowAt indexPath: IndexPath)
@@ -95,29 +99,46 @@ class WorkoutPlanTableViewController: UITableViewController {
             }
             
             // Fetches the appropriate meal for the data source layout.
-            let workouts = self.workoutPlan.workouts
-            let workout = workouts[indexPath.row]
-            let activity = ActivityManager.Instance.activity(by: workout.type)
-            
-            cell.workoutLabel.text = activity.title
-            cell.completedLabel.text =
-            "\(workout.completedSessions)/\(workout.sessionsPerWeek)"
-            cell.workoutImage.image = UIImage(named: activity.icon)
-            cell.workoutColorBar.backgroundColor = getColor(for: activity)
-            self.showCheckboxIfCompleted(cell, workout)
-            
+            let workout = self.workoutPlan.workouts[indexPath.row]
+            setup(cell, for: workout);
             return cell
     }
     
-    func showCheckboxIfCompleted(_ cell: WorkoutTableViewCell,
+    func setup( _ cell: WorkoutTableViewCell, for workout: Workout) {
+        let activity = ActivityManager.Instance.activity(by: workout.type)
+        
+        cell.workoutLabel.text = activity.title
+        cell.workoutImage.image = UIImage(named: activity.icon)
+        cell.workoutColorBar.backgroundColor = getColor(for: activity)
+        
+        cell.completedLabel.text =
+            "\(workout.getSessionsCompleted())/\(workout.sessionsPerWeek)"
+        
+        var completionsStr: String = ""
+        for (idx, completion) in workout.completions.enumerated() {
+            completionsStr += weekDay(for: completion)
+            if (idx != workout.completions.count - 1) {
+                completionsStr += ", "
+            }
+        }
+        cell.completionsLabel.text = completionsStr
+        
+        self.toggleCompletion(cell, workout)
+    }
+    
+    
+    
+    func toggleCompletion(_ cell: WorkoutTableViewCell,
                                  _ workout: Workout) {
-        if (workout.completedSessions < workout.sessionsPerWeek) {
+        if (workout.getSessionsCompleted() < workout.sessionsPerWeek) {
             cell.accessoryType = .none
             cell.completedLabel.isHidden = false
+            cell.completionsLabel.isHidden = false
             cell.workoutLabel?.textColor = UIColor.black
         } else {
             cell.accessoryType = .checkmark
             cell.completedLabel.isHidden = true
+            cell.completionsLabel.isHidden = true
             cell.workoutLabel?.textColor = UIColor.gray
         }
     }
@@ -158,7 +179,7 @@ class WorkoutPlanTableViewController: UITableViewController {
             if !workout.allCompleted() {
                 actions.append(completeAction)
             }
-            if workout.completedSessions > 0 {
+            if workout.getSessionsCompleted() > 0 {
                 actions.append(undoAction)
             }
             return actions
@@ -176,7 +197,8 @@ class WorkoutPlanTableViewController: UITableViewController {
         switch(segue.identifier ?? "") {
             
         case "ShowWorkoutDetail":
-            guard let detailController = segue.destination as? WorkoutDetailViewController else {
+            guard let detailController = segue.destination
+                    as? WorkoutDetailTableViewController else {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
             
@@ -185,7 +207,8 @@ class WorkoutPlanTableViewController: UITableViewController {
             }
             
             guard let indexPath = tableView.indexPath(for: cell) else {
-                fatalError("The selected cell is not being displayed by the table")
+                fatalError(
+                    "The selected cell is not being displayed by the table")
             }
             
             let workout = self.workoutPlan.workouts[indexPath.row]

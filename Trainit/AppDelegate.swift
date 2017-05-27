@@ -17,7 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     override init() {
         // Firebase Init
         FirebaseApp.configure()
-        Database.database().isPersistenceEnabled = true
+        // TODO clear local storage and uncomment
+        //Database.database().isPersistenceEnabled = true
     }
 
 
