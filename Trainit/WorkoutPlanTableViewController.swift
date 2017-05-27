@@ -24,6 +24,13 @@ class WorkoutPlanTableViewController: UITableViewController {
     
     var workoutPlan: WorkoutPlan!
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.barTintColor =
+            getDefaultNavBarColor()
+        self.navigationController?.navigationBar.tintColor = UIColor.white
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -43,7 +50,7 @@ class WorkoutPlanTableViewController: UITableViewController {
         
         // Uncomment the following line to preserve selection between
         // presentations
-        // self.clearsSelectionOnViewWillAppear = false
+        self.clearsSelectionOnViewWillAppear = true
         
         // Uncomment the following line to display an Edit button in the
         // navigation bar for this view controller.
@@ -94,7 +101,7 @@ class WorkoutPlanTableViewController: UITableViewController {
             
             cell.workoutLabel.text = activity.title
             cell.completedLabel.text =
-                "\(workout.completedSessions)/\(workout.sessionsPerWeek)"
+            "\(workout.completedSessions)/\(workout.sessionsPerWeek)"
             cell.workoutImage.image = UIImage(named: activity.icon)
             cell.workoutColorBar.backgroundColor = getColor(for: activity)
             self.showCheckboxIfCompleted(cell, workout)
@@ -157,15 +164,40 @@ class WorkoutPlanTableViewController: UITableViewController {
             return actions
     }
     
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little
-     // preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-     }
-     */
+    
+    // MARK: - Navigation
+    
+    
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        super.prepare(for: segue, sender: sender)
+        
+        switch(segue.identifier ?? "") {
+            
+        case "ShowWorkoutDetail":
+            guard let detailController = segue.destination as? WorkoutDetailViewController else {
+                fatalError("Unexpected destination: \(segue.destination)")
+            }
+            
+            guard let cell = sender as? WorkoutTableViewCell else {
+                fatalError("Unexpected sender: \(sender)")
+            }
+            
+            guard let indexPath = tableView.indexPath(for: cell) else {
+                fatalError("The selected cell is not being displayed by the table")
+            }
+            
+            let workout = self.workoutPlan.workouts[indexPath.row]
+            detailController.workout = workout
+            cell.setSelected(false, animated: true)
+            
+        default:
+            fatalError("Unexpected Segue Identifier; \(segue.identifier)")
+        }
+    }
+    
+    
+    
     
 }

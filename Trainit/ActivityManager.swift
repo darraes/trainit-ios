@@ -18,9 +18,9 @@ class ActivityManager {
         activities["running"] = Activity(type: "running",
                                          title: "Running",
                                          icon: "running_icon",
-                                         themeColorRgb: (240.0 / 255.0,
-                                                         209.0 / 255.0,
-                                                         141.0 / 255.0))
+                                         themeColorRgb: (240.0 / 275.0,
+                                                         209.0 / 275.0,
+                                                         141.0 / 275.0))
         
         activities["biking"] = Activity(type: "biking",
                                         title: "Biking",

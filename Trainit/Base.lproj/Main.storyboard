@@ -55,6 +55,7 @@
                                     <outlet property="workoutColorBar" destination="m7v-cj-Hcr" id="5HT-eO-63c"/>
                                     <outlet property="workoutImage" destination="iZW-AR-fOc" id="9rj-4V-IDV"/>
                                     <outlet property="workoutLabel" destination="ZbU-Fs-GN9" id="wbh-jI-eGY"/>
+                                    <segue destination="BYZ-38-t0r" kind="show" identifier="ShowWorkoutDetail" id="6br-jL-vIs"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -101,6 +102,10 @@
                         </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="EKP-Je-iqx">
+                        <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="kzh-dJ-6zo" kind="relationship" relationship="rootViewController" id="3PA-cA-aaW"/>
                     </connections>

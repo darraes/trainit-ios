@@ -17,3 +17,7 @@ func getColor(for activity: Activity) -> UIColor {
         alpha: 1.0)
     
 }
+
+func getDefaultNavBarColor() -> UIColor {
+    return UIColor.darkGray
+}
