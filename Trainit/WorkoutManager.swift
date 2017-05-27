@@ -47,4 +47,8 @@ class WorkoutManager {
     func subscribe(with callback: @escaping WorkoutPlanCallback) {
         self.onPlanChangeCallbacks.append(callback)
     }
+    
+    func save(_ workout: Workout) {
+        workout.save()
+    }
 }

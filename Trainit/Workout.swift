@@ -14,14 +14,14 @@ class Workout {
     let id: String
     let type: String
     let sessionsPerWeek: Int
-    var completed: Int
+    var completedSessions: Int
     var plan: WorkoutPlan?
     
     init(id: String, type: String, sessionsPerWeek: Int, completed: Int) {
         self.id = id
         self.type = type
         self.sessionsPerWeek = sessionsPerWeek
-        self.completed = completed
+        self.completedSessions = completed
         self.plan = nil
     }
     
@@ -30,7 +30,7 @@ class Workout {
         self.id = workout["id"] as! String
         self.type = workout["type"] as! String
         self.sessionsPerWeek = workout["sessions_per_week"] as! Int
-        self.completed = workout["completed"] as! Int
+        self.completedSessions = workout["completed"] as! Int
     }
     
     func setOwnerPlan(_ plan: WorkoutPlan) {
@@ -46,8 +46,24 @@ class Workout {
         return [
             "id": self.id,
             "type": self.type,
-            "completed": self.completed,
+            "completed": self.completedSessions,
             "sessions_per_week": self.sessionsPerWeek
         ]
+    }
+    
+    func getSessionsCompleted() -> Int {
+        return self.completedSessions
+    }
+    
+    func allCompleted() -> Bool {
+        return self.completedSessions >= self.sessionsPerWeek
+    }
+    
+    func completeOneSession() {
+        self.completedSessions += 1
+    }
+    
+    func revertOneSession() {
+        self.completedSessions -= 1
     }
 }

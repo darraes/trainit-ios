@@ -93,20 +93,18 @@ class WorkoutPlanTableViewController: UITableViewController {
             let activity = ActivityManager.Instance.activity(by: workout.type)
             
             cell.workoutLabel.text = activity.title
-            cell.completedLabel.text = "\(workout.completed)/\(workout.sessionsPerWeek)"
+            cell.completedLabel.text =
+                "\(workout.completedSessions)/\(workout.sessionsPerWeek)"
             cell.workoutImage.image = UIImage(named: activity.icon)
-            cell.workoutColorBar.backgroundColor = UIColor(
-                red: CGFloat(activity.themeColorRgb.red),
-                green: CGFloat(activity.themeColorRgb.green ),
-                blue: CGFloat(activity.themeColorRgb.blue),
-                alpha: 1.0)
+            cell.workoutColorBar.backgroundColor = getColor(for: activity)
             self.showCheckboxIfCompleted(cell, workout)
             
             return cell
     }
     
-    func showCheckboxIfCompleted(_ cell: WorkoutTableViewCell, _ workout: Workout) {
-        if (workout.completed < workout.sessionsPerWeek) {
+    func showCheckboxIfCompleted(_ cell: WorkoutTableViewCell,
+                                 _ workout: Workout) {
+        if (workout.completedSessions < workout.sessionsPerWeek) {
             cell.accessoryType = .none
             cell.completedLabel.isHidden = false
             cell.workoutLabel?.textColor = UIColor.black
@@ -127,21 +125,36 @@ class WorkoutPlanTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView,
                             editActionsForRowAt: IndexPath)
         -> [UITableViewRowAction]? {
-            let more = UITableViewRowAction(style: .normal, title: "More")
-            { action, index in
-                defer { self.tableView.isEditing = false }
-                print("more button tapped")
-            }
-            more.backgroundColor = .lightGray
+            let workouts = self.workoutPlan.workouts
+            let workout = workouts[editActionsForRowAt.row]
+            let activity = ActivityManager.Instance.activity(by: workout.type)
             
-            let favorite = UITableViewRowAction(style: .normal, title: "Favorite")
-            { action, index in
+            let completeAction = UITableViewRowAction(style: .normal,
+                                                      title: "Complete")
+            { (action, index) in
                 defer { self.tableView.isEditing = false }
-                print("favorite button tapped")
+                workout.completeOneSession()
+                WorkoutManager.Instance.save(workout)
             }
-            favorite.backgroundColor = .orange
+            completeAction.backgroundColor = getColor(for: activity)
             
-            return [favorite, more]
+            let undoAction = UITableViewRowAction(style: .normal,
+                                                  title: "Undo")
+            { (action, index) in
+                defer { self.tableView.isEditing = false }
+                workout.revertOneSession()
+                WorkoutManager.Instance.save(workout)
+            }
+            undoAction.backgroundColor = .lightGray
+            
+            var actions: [UITableViewRowAction] = []
+            if !workout.allCompleted() {
+                actions.append(completeAction)
+            }
+            if workout.completedSessions > 0 {
+                actions.append(undoAction)
+            }
+            return actions
     }
     
     /*

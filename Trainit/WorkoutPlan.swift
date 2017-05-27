@@ -71,11 +71,11 @@ class WorkoutPlan {
     
     func sortOnCompletion() {
         self.workouts.sort(by:{ (left, right) in
-            let leftDelta = left.sessionsPerWeek - left.completed
-            let rightDelta = right.sessionsPerWeek - right.completed
+            let leftDelta = left.sessionsPerWeek - left.completedSessions
+            let rightDelta = right.sessionsPerWeek - right.completedSessions
             
             if leftDelta == rightDelta {
-                return left.completed < right.completed
+                return left.completedSessions < right.completedSessions
             }
             
             return leftDelta > rightDelta
