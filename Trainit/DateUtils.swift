@@ -8,12 +8,6 @@
 
 import Foundation
 
-func synced(_ lock: Any, _ closure: () -> ()) {
-    objc_sync_enter(lock)
-    closure()
-    objc_sync_exit(lock)
-}
-
 func date(for strDate: String) -> Date {
     let fmt = DateFormatter()
     fmt.dateFormat = "yyyy-MM-dd";
@@ -26,8 +20,15 @@ func dateStr(for date: Date) -> String {
     return fmt.string(from: date)
 }
 
-func weekDay(for date: Date) -> String {
+func weekDayStr(for date: Date) -> String {
     let fmt = DateFormatter()
     fmt.dateFormat = "E";
     return fmt.string(from: date)
 }
+
+func intervalInDays(for start: Date, and end: Date) -> Int {
+    let calendar = Calendar.current
+    let distance = calendar.dateComponents([.day], from: start, to: end)
+    return distance.day!;
+}
+

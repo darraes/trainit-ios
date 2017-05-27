@@ -23,7 +23,6 @@ class WorkoutPlan {
         let plan = snapshot.value as! [String: AnyObject]
         self.id = plan["id"] as! String
         self.startDate = date(for: plan["start-date"] as! String)
-
         
         let workouts = snapshot.childSnapshot(forPath: "workouts")
         for workout in workouts.children {

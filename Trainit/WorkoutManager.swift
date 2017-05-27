@@ -14,7 +14,8 @@ typealias WorkoutPlanCallback = (WorkoutPlan) -> Void
 class WorkoutManager {
     // Singleton instance
     static let Instance = WorkoutManager()
-    
+    // Rollower days
+    static let kRolloverIntervalDays = 7
     // Reference to users current workout plan
     var workoutPlansRef : DatabaseReference?
     // Current instantiated workout
@@ -38,6 +39,10 @@ class WorkoutManager {
         
         workoutPlansRef!.observe(.value, with: { snapshot in
             self.workoutPlan = WorkoutPlan(snapshot)
+            
+            // If it is a new week of training, rollover the plan
+            self.rolloverIfNecessary(self.workoutPlan!)
+            
             for callback in self.onPlanChangeCallbacks {
                 callback(self.workoutPlan!)
             }
@@ -50,5 +55,12 @@ class WorkoutManager {
     
     func save(_ workout: Workout) {
         workout.save()
+    }
+    
+    func rolloverIfNecessary(_ plan: WorkoutPlan) {
+        if intervalInDays(for: plan.startDate, and: Date())
+            == WorkoutManager.kRolloverIntervalDays {
+            print("Rollover")
+        }
     }
 }

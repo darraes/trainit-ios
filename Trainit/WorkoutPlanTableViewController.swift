@@ -116,7 +116,7 @@ class WorkoutPlanTableViewController: UITableViewController {
         
         var completionsStr: String = ""
         for (idx, completion) in workout.completions.enumerated() {
-            completionsStr += weekDay(for: completion)
+            completionsStr += weekDayStr(for: completion)
             if (idx != workout.completions.count - 1) {
                 completionsStr += ", "
             }
@@ -203,7 +203,8 @@ class WorkoutPlanTableViewController: UITableViewController {
             }
             
             guard let cell = sender as? WorkoutTableViewCell else {
-                fatalError("Unexpected sender: \(sender)")
+                let msg = sender ?? "nil"
+                fatalError("Unexpected sender: \(msg)")
             }
             
             guard let indexPath = tableView.indexPath(for: cell) else {
@@ -215,8 +216,12 @@ class WorkoutPlanTableViewController: UITableViewController {
             detailController.workout = workout
             cell.setSelected(false, animated: true)
             
+            self.navigationItem.backBarButtonItem = UIBarButtonItem(
+                title:"", style:.plain, target:nil, action:nil)
+            
         default:
-            fatalError("Unexpected Segue Identifier; \(segue.identifier)")
+            let msg = segue.identifier ?? "nil"
+            fatalError("Unexpected Segue Identifier; \(msg)")
         }
     }
     

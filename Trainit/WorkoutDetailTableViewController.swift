@@ -15,6 +15,8 @@ class WorkoutDetailTableViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         let activity = ActivityManager.Instance.activity(by: self.workout!.type)
+        
+        self.navigationItem.title = activity.title
         self.navigationController?.navigationBar.barTintColor =
             getColor(for: activity)
     }
@@ -60,7 +62,8 @@ class WorkoutDetailTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView,
                             cellForRowAt indexPath: IndexPath)
         -> UITableViewCell {
-            let activity = ActivityManager.Instance.activity(by: self.workout!.type)
+            let activity = ActivityManager.Instance.activity(
+                by: self.workout!.type)
             
             if (indexPath.row == 0) {
                 guard let cell = tableView.dequeueReusableCell(
