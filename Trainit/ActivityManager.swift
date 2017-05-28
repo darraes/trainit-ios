@@ -55,14 +55,6 @@ class ActivityManager {
                                                         103.0 / 255.0,
                                                         43.0 / 255.0))
         
-        activities["sports"] = Activity(type: "sports",
-                                        title: "Sports",
-                                        icon: "sports_icon",
-                                        banner: "sports_banner",
-                                        themeColorRgb: (6.0 / 255.0,
-                                                        57.0 / 255.0,
-                                                        122.0 / 255.0))
-        
         activities["crossfit"] = Activity(type: "crossfit",
                                           title: "Crossfit",
                                           icon: "crossfit_icon",
