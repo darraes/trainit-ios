@@ -17,6 +17,13 @@ class Workout {
     var completions: [Date]
     var plan: WorkoutPlan?
     
+    init (_ id: String, _ type : String, _ sessionPerWeek: Int) {
+        self.id = id
+        self.type = type
+        self.sessionsPerWeek = sessionPerWeek
+        self.completions = []
+    }
+    
     init(_ snapshot: DataSnapshot) {
         let workout = snapshot.value as! [String: AnyObject]
         self.id = workout["id"] as! String

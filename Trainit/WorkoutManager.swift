@@ -12,6 +12,7 @@ import Firebase
 typealias WorkoutPlanCallback = (WorkoutPlan) -> Void
 
 class WorkoutManager {
+    static let kCurrentPlanPathFmt = "workout-plans/%d/current"
     // Singleton instance
     static let Instance = WorkoutManager()
     // Rollower days
@@ -35,7 +36,7 @@ class WorkoutManager {
     func listen(for user: User) {
         self.user = user
         self.workoutPlansRef = Database.database().reference(
-            withPath: "workout-plans/1/current")
+            withPath:  String(format: WorkoutManager.kCurrentPlanPathFmt, 1))
         
         workoutPlansRef!.observe(.value, with: { snapshot in
             self.workoutPlan = WorkoutPlan(snapshot)

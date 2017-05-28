@@ -25,7 +25,6 @@
 		654FA2181ED65124008CB178 /* ActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 654FA2171ED65124008CB178 /* ActivityManager.swift */; };
 		65DB25DF1ED80586009377D3 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DB25DE1ED80586009377D3 /* Color.swift */; };
 		65DB25E11ED9DF72009377D3 /* WorkoutDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DB25E01ED9DF72009377D3 /* WorkoutDetailTableViewController.swift */; };
-		65DB25E31ED9E1C0009377D3 /* WorkoutBannerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DB25E21ED9E1C0009377D3 /* WorkoutBannerTableViewCell.swift */; };
 		65DB25E51ED9E1D1009377D3 /* ExerciseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DB25E41ED9E1D1009377D3 /* ExerciseTableViewCell.swift */; };
 		65DB25E71EDA215E009377D3 /* ThreadingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DB25E61EDA215E009377D3 /* ThreadingUtils.swift */; };
 		B6C649B65DB85C64B5485D7E /* Pods_Trainit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 691587E10435936B67A8F8BF /* Pods_Trainit.framework */; };
@@ -67,7 +66,6 @@
 		654FA2171ED65124008CB178 /* ActivityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityManager.swift; sourceTree = "<group>"; };
 		65DB25DE1ED80586009377D3 /* Color.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		65DB25E01ED9DF72009377D3 /* WorkoutDetailTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkoutDetailTableViewController.swift; sourceTree = "<group>"; };
-		65DB25E21ED9E1C0009377D3 /* WorkoutBannerTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkoutBannerTableViewCell.swift; sourceTree = "<group>"; };
 		65DB25E41ED9E1D1009377D3 /* ExerciseTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExerciseTableViewCell.swift; sourceTree = "<group>"; };
 		65DB25E61EDA215E009377D3 /* ThreadingUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadingUtils.swift; sourceTree = "<group>"; };
 		691587E10435936B67A8F8BF /* Pods_Trainit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Trainit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -196,7 +194,6 @@
 			isa = PBXGroup;
 			children = (
 				654FA20B1ED3EE9A008CB178 /* WorkoutTableViewCell.swift */,
-				65DB25E21ED9E1C0009377D3 /* WorkoutBannerTableViewCell.swift */,
 				65DB25E41ED9E1D1009377D3 /* ExerciseTableViewCell.swift */,
 			);
 			name = Controls;
@@ -461,7 +458,6 @@
 				6523DCFC1ED67D41006D0E63 /* User.swift in Sources */,
 				654FA20C1ED3EE9A008CB178 /* WorkoutTableViewCell.swift in Sources */,
 				65DB25E11ED9DF72009377D3 /* WorkoutDetailTableViewController.swift in Sources */,
-				65DB25E31ED9E1C0009377D3 /* WorkoutBannerTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

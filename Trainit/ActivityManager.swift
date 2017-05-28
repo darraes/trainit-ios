@@ -90,9 +90,9 @@ class ActivityManager {
                                         title: "Core Training",
                                         icon: "core_icon",
                                         banner: "core_training_banner",
-                                        themeColorRgb: (150.0 / 255.0,
-                                                        150.0 / 255.0,
-                                                        150.0 / 255.0))
+                                        themeColorRgb: (6.0 / 255.0,
+                                                        57.0 / 255.0,
+                                                        122.0 / 255.0))
         
     }
     

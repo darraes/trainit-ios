@@ -87,32 +87,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="BannerTableViewCell" rowHeight="150" id="lan-By-IWV" customClass="WorkoutBannerTableViewCell" customModule="Trainit" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="375" height="150"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ExerciseTableViewCell" rowHeight="50" id="jbT-XL-nlb" customClass="ExerciseTableViewCell" customModule="Trainit" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="375" height="50"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="lan-By-IWV" id="QZO-GL-J3E">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="150"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ybE-s5-ik7">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="150"/>
-                                        </imageView>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstItem="ybE-s5-ik7" firstAttribute="leading" secondItem="QZO-GL-J3E" secondAttribute="leading" id="8cD-f4-vHg"/>
-                                        <constraint firstAttribute="trailing" secondItem="ybE-s5-ik7" secondAttribute="trailing" id="Yei-I7-rsD"/>
-                                        <constraint firstAttribute="bottom" secondItem="ybE-s5-ik7" secondAttribute="bottom" id="Ys3-Cl-jpf"/>
-                                        <constraint firstItem="ybE-s5-ik7" firstAttribute="top" secondItem="QZO-GL-J3E" secondAttribute="top" id="gjh-Ix-nnM"/>
-                                    </constraints>
-                                </tableViewCellContentView>
-                                <connections>
-                                    <outlet property="bannerImage" destination="ybE-s5-ik7" id="my1-Uu-dN9"/>
-                                </connections>
-                            </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ExerciseTableViewCell" rowHeight="50" id="717-lc-qBi" customClass="ExerciseTableViewCell" customModule="Trainit" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="178" width="375" height="50"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="717-lc-qBi" id="9fi-XZ-Gig">
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="jbT-XL-nlb" id="1Tg-AW-Oug">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
