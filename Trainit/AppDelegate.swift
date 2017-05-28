@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Firebase Init
         FirebaseApp.configure()
         // TODO clear local storage and uncomment
-        //Database.database().isPersistenceEnabled = true
+        Database.database().isPersistenceEnabled = true
     }
 
 

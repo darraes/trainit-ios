@@ -20,8 +20,6 @@ import Firebase
 
 class WorkoutPlanTableViewController: UITableViewController {
     
-    let workoutRef = Database.database().reference(withPath: "workout-plans/1/current")
-    
     var workoutPlan: WorkoutPlan!
     
     override func viewWillAppear(_ animated: Bool) {
@@ -34,12 +32,7 @@ class WorkoutPlanTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        workoutRef.observe(.value, with: { snapshot in
-            //self.workoutPlan = WorkoutPlan(snapshot)
-            //self.tableView.reloadData()
-        })
-        
-        WorkoutManager.Instance.listen(for: User())
+        WorkoutManager.Instance.listen()
         WorkoutManager.Instance.subscribe(with: { workoutPlan in
             self.workoutPlan = workoutPlan
             self.tableView.reloadData()
@@ -48,13 +41,7 @@ class WorkoutPlanTableViewController: UITableViewController {
             self.workoutPlan = workoutPlan
         }
         
-        // Uncomment the following line to preserve selection between
-        // presentations
         self.clearsSelectionOnViewWillAppear = true
-        
-        // Uncomment the following line to display an Edit button in the
-        // navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
     
     override func didReceiveMemoryWarning() {

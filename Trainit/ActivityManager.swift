@@ -35,9 +35,9 @@ class ActivityManager {
                                       title: "Yoga",
                                       icon: "yoga_icon",
                                       banner: "yoga_banner",
-                                      themeColorRgb: (160.0 / 255.0,
-                                                      94.0 / 255.0,
-                                                      196.0 / 255.0))
+                                      themeColorRgb: (144.0 / 255.0,
+                                                      85.0 / 255.0,
+                                                      176.0 / 255.0))
         
         activities["swimming"] = Activity(type: "swimming",
                                           title: "Swimming",
@@ -64,12 +64,12 @@ class ActivityManager {
                                                           47.0 / 255.0))
         
         activities["leg_training"] = Activity(type: "leg_training",
-                                              title: "Leg Training",
+                                              title: "Lower Body",
                                               icon: "leg_icon",
                                               banner: "leg_training_banner",
-                                              themeColorRgb: (28.0 / 255.0,
-                                                              114.0 / 255.0,
-                                                              120.0 / 255.0))
+                                              themeColorRgb: (31.0 / 255.0,
+                                                              125.0 / 255.0,
+                                                              132.0 / 255.0))
         
         activities["upper_body_training"] = Activity(
             type: "upper_body_training",
@@ -79,7 +79,7 @@ class ActivityManager {
             themeColorRgb: (0.25, 0.25, 0.25))
         
         activities["core"] = Activity(type: "core",
-                                        title: "Core Training",
+                                        title: "Core Strength",
                                         icon: "core_icon",
                                         banner: "core_training_banner",
                                         themeColorRgb: (6.0 / 255.0,

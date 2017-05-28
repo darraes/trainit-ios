@@ -12,7 +12,8 @@ import Firebase
 typealias WorkoutPlanCallback = (WorkoutPlan) -> Void
 
 class WorkoutManager {
-    static let kCurrentPlanPathFmt = "workout-plans/%d/current"
+    // Path to current plans store
+    static let kCurrentPlanPathFmt = "workout-plans/%@/current"
     // Singleton instance
     static let Instance = WorkoutManager()
     // Rollower days
@@ -21,22 +22,20 @@ class WorkoutManager {
     var workoutPlansRef : DatabaseReference?
     // Current instantiated workout
     var workoutPlan: WorkoutPlan?
-    // Current logged user
-    var user: User?
     // Callbacks to be executed on changing the plan
     var onPlanChangeCallbacks: [WorkoutPlanCallback]
     
     init() {
         self.onPlanChangeCallbacks = []
-        self.user = nil
         self.workoutPlansRef = nil
         
     }
     
-    func listen(for user: User) {
-        self.user = user
+    func listen() {
+        let user = UserAccountManager.Instance.current!
         self.workoutPlansRef = Database.database().reference(
-            withPath:  String(format: WorkoutManager.kCurrentPlanPathFmt, 1))
+            withPath:  String(format: WorkoutManager.kCurrentPlanPathFmt,
+                              user.uid))
         
         workoutPlansRef!.observe(.value, with: { snapshot in
             self.workoutPlan = WorkoutPlan(snapshot)

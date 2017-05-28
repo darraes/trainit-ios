@@ -20,12 +20,16 @@ func getColor(for activity: Activity) -> UIColor {
 
 func rgbColor(_ rgb: (red: Float, green: Float, blue: Float)) -> UIColor{
     return UIColor(
-        red: CGFloat(rgb.red),
-        green: CGFloat(rgb.green),
-        blue: CGFloat(rgb.blue),
+        red: CGFloat(rgb.red / 255.0),
+        green: CGFloat(rgb.green / 255.0),
+        blue: CGFloat(rgb.blue / 255.0),
         alpha: 1.0)
 }
 
 func getDefaultNavBarColor() -> UIColor {
-    return UIColor.darkGray
+    return UIColor(
+        red: CGFloat(67.0 / 255.0),
+        green: CGFloat(130.0 / 255.0),
+        blue: CGFloat(144.0 / 255.0),
+        alpha: 1.0)
 }
