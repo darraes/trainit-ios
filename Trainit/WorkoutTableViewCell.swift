@@ -15,6 +15,7 @@ class WorkoutTableViewCell: UITableViewCell {
     @IBOutlet weak var workoutColorBar: UIView!
     @IBOutlet weak var completedLabel: UILabel!
     @IBOutlet weak var completionsLabel: UILabel!
+    @IBOutlet weak var borderView: UIView!
     
     override func awakeFromNib() {
         super.awakeFromNib()

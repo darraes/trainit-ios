@@ -96,7 +96,9 @@ class WorkoutPlanTableViewController: UITableViewController {
         
         cell.workoutLabel.text = activity.title
         cell.workoutImage.image = UIImage(named: activity.icon)
-        cell.workoutColorBar.backgroundColor = getColor(for: activity)
+        cell.borderView.layer.borderWidth = 1.0
+        cell.borderView.layer.cornerRadius = 23.0
+        cell.borderView.layer.borderColor = getColor(for: activity).cgColor
         
         cell.completedLabel.text =
             "\(workout.getSessionsCompleted())/\(workout.sessionsPerWeek)"
