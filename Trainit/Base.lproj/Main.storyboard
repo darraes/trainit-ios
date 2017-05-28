@@ -195,10 +195,10 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="WLI-bb-KSb" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="IxB-cc-xK3">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="IxB-cc-xK3">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="barTintColor" red="0.29803922770000002" green="0.29803922770000002" blue="0.29803922770000002" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="barTintColor" red="0.2627450980392157" green="0.50980392156862742" blue="0.56470588235294117" alpha="1" colorSpace="calibratedRGB"/>
                         <textAttributes key="titleTextAttributes">
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </textAttributes>
