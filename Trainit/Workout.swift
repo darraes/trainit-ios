@@ -9,7 +9,7 @@
 import Foundation
 import Firebase
 
-class Workout {
+class Workout : Hashable {
     
     let id: String
     let type: String
@@ -37,6 +37,16 @@ class Workout {
                 self.completions.append(date(for: completion))
             }
         }
+    }
+    
+    var hashValue: Int {
+        get {
+            return self.id.hashValue
+        }
+    }
+    
+    static func ==(lhs: Workout, rhs: Workout) -> Bool {
+        return lhs.id == rhs.id && lhs.type == lhs.type
     }
     
     func setOwnerPlan(_ plan: WorkoutPlan) {

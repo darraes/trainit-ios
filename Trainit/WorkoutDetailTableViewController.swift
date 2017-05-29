@@ -11,10 +11,12 @@ import UIKit
 class WorkoutDetailTableViewController: UITableViewController {
     
     var workout: Workout?
+    var workoutExercises: [Exercise]!
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         let activity = ActivityManager.Instance.activity(by: self.workout!.type)
+        self.workoutExercises = []
         
         self.navigationItem.title = activity.title
         self.navigationController?.navigationBar.barTintColor =
@@ -23,13 +25,18 @@ class WorkoutDetailTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        WorkoutManager.Instance.subscribe(for: self.workout!) { (exercises) in
+            self.workoutExercises = exercises
+            self.tableView.reloadData()
+        }
     }
     
     override func willMove(toParentViewController parent: UIViewController?) {
         super.willMove(toParentViewController: parent)
         self.navigationController?.navigationBar.barTintColor =
             getDefaultNavBarColor()
+        WorkoutManager.Instance.unsubscribe(for: self.workout!)
     }
     
     override func didReceiveMemoryWarning() {
@@ -47,7 +54,7 @@ class WorkoutDetailTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView,
                             numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 5
+        return self.workoutExercises.count
     }
     
     override func tableView(_ tableView: UITableView,
@@ -65,6 +72,9 @@ class WorkoutDetailTableViewController: UITableViewController {
                     fatalError("The dequeued cell is not an instance of"
                         + " ExerciseTableViewCell.")
             }
+            let exercise = self.workoutExercises[indexPath.row]
+            cell.titleLabel.text = exercise.title
+            
             return cell
     }
 }

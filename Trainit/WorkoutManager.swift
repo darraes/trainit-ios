@@ -10,28 +10,32 @@ import Foundation
 import Firebase
 
 typealias WorkoutPlanCallback = (WorkoutPlan) -> Void
+typealias ExerciseListCallback = ([Exercise]) -> Void
 
 class WorkoutManager {
     // Path to current plans store
     static let kCurrentPlanPathFmt = "workout-plans/%@/current"
+    // Path to exercise
+    static let kExercisePathFmt = "exercises/%@/%@"
     // Singleton instance
     static let Instance = WorkoutManager()
     // Rollower days
     static let kRolloverIntervalDays = 7
+    
     // Reference to users current workout plan
     var workoutPlansRef : DatabaseReference?
     // Current instantiated workout
     var workoutPlan: WorkoutPlan?
-    // Callbacks to be executed on changing the plan
-    var onPlanChangeCallbacks: [WorkoutPlanCallback]
+    
+    var activeWorkoutObservers: [Workout: (ref: DatabaseReference, handle: DatabaseHandle)]
     
     init() {
-        self.onPlanChangeCallbacks = []
+        self.activeWorkoutObservers = [:]
         self.workoutPlansRef = nil
         
     }
     
-    func listen() {
+    func listen(with callback: @escaping WorkoutPlanCallback) {
         let user = UserAccountManager.Instance.current!
         self.workoutPlansRef = Database.database().reference(
             withPath:  String(format: WorkoutManager.kCurrentPlanPathFmt,
@@ -43,14 +47,9 @@ class WorkoutManager {
             // If it is a new week of training, rollover the plan
             self.rolloverIfNecessary(self.workoutPlan!)
             
-            for callback in self.onPlanChangeCallbacks {
-                callback(self.workoutPlan!)
-            }
+            //Return info to caller
+            callback(self.workoutPlan!)
         })
-    }
-    
-    func subscribe(with callback: @escaping WorkoutPlanCallback) {
-        self.onPlanChangeCallbacks.append(callback)
     }
     
     func save(_ workout: Workout) {
@@ -62,5 +61,32 @@ class WorkoutManager {
             == WorkoutManager.kRolloverIntervalDays {
             print("Rollover")
         }
+    }
+    
+    func subscribe(for workout: Workout,
+                   with callback: @escaping ExerciseListCallback) {
+        let user = UserAccountManager.Instance.current!
+        let exercisesRef = Database.database().reference(
+            withPath:  String(format: WorkoutManager.kExercisePathFmt,
+                              user.uid,
+                              workout.id))
+        
+        let handle = exercisesRef.observe(.value, with: { snapshot in
+            let listSnapshot = snapshot.childSnapshot(forPath: "list")
+            var exercises: [Exercise] = []
+            for exercise in listSnapshot.children {
+                exercises.append(Exercise(exercise as! DataSnapshot))
+            }
+            callback(exercises)
+        })
+        self.activeWorkoutObservers[workout] = (ref: exercisesRef,
+                                                handle: handle)
+    }
+    
+    func unsubscribe(for workout: Workout) {
+        if let dbPtr = activeWorkoutObservers[workout] {
+            dbPtr.ref.removeObserver(withHandle: dbPtr.handle)
+        }
+        self.activeWorkoutObservers.removeValue(forKey: workout)
     }
 }

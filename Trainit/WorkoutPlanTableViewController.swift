@@ -32,14 +32,10 @@ class WorkoutPlanTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        WorkoutManager.Instance.listen()
-        WorkoutManager.Instance.subscribe(with: { workoutPlan in
+        WorkoutManager.Instance.listen(with: { workoutPlan in
             self.workoutPlan = workoutPlan
             self.tableView.reloadData()
         })
-        if let workoutPlan = WorkoutManager.Instance.workoutPlan {
-            self.workoutPlan = workoutPlan
-        }
         
         self.clearsSelectionOnViewWillAppear = true
     }
