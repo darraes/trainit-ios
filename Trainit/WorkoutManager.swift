@@ -9,7 +9,7 @@
 import Foundation
 import Firebase
 
-typealias WorkoutPlanCallback = (WorkoutPlan) -> Void
+typealias WorkoutPlanCallback = (WorkoutPlan, Bool) -> Void
 typealias ExerciseListCallback = ([Exercise]) -> Void
 
 class WorkoutManager {
@@ -46,10 +46,10 @@ class WorkoutManager {
             self.workoutPlan = WorkoutPlan(snapshot)
             
             // If it is a new week of training, rollover the plan
-            self.rolloverIfNecessary(self.workoutPlan!)
+            let isRolling = self.rolloverIfNecessary(self.workoutPlan!)
             
             //Return info to caller
-            callback(self.workoutPlan!)
+            callback(self.workoutPlan!, isRolling)
         })
     }
     
@@ -58,7 +58,7 @@ class WorkoutManager {
         workout.save()
     }
     
-    func rolloverIfNecessary(_ plan: WorkoutPlan) {
+    func rolloverIfNecessary(_ plan: WorkoutPlan) -> Bool {
         if intervalInDays(for: plan.startDate, and: Date())
             == WorkoutManager.kRolloverIntervalDays {
             Log.info("Rolling over current plan")
@@ -71,7 +71,9 @@ class WorkoutManager {
             
             // Push to store
             newPlan.save()
+            return true
         }
+        return false
     }
     
     func subscribe(for workout: Workout,

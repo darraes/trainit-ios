@@ -35,9 +35,9 @@ class ActivityManager {
                                       title: "Yoga",
                                       icon: "yoga_icon",
                                       banner: "yoga_banner",
-                                      themeColorRgb: (144.0 / 255.0,
-                                                      85.0 / 255.0,
-                                                      176.0 / 255.0))
+                                      themeColorRgb: (130.0 / 255.0,
+                                                      77.0 / 255.0,
+                                                      159.0 / 255.0))
         
         activities["swimming"] = Activity(type: "swimming",
                                           title: "Swimming",
@@ -67,9 +67,9 @@ class ActivityManager {
                                               title: "Lower Body",
                                               icon: "leg_icon",
                                               banner: "leg_training_banner",
-                                              themeColorRgb: (31.0 / 255.0,
-                                                              125.0 / 255.0,
-                                                              132.0 / 255.0))
+                                              themeColorRgb: (14.0 / 255.0,
+                                                              88.0 / 255.0,
+                                                              54.0 / 255.0))
         
         activities["upper_body_training"] = Activity(
             type: "upper_body_training",

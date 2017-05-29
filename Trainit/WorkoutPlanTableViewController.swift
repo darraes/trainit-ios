@@ -32,7 +32,7 @@ class WorkoutPlanTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        WorkoutManager.Instance.listen(with: { workoutPlan in
+        WorkoutManager.Instance.listen(with: { workoutPlan, isRolling in
             self.workoutPlan = workoutPlan
             self.tableView.reloadData()
         })
