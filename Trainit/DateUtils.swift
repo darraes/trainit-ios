@@ -26,6 +26,12 @@ func weekDayStr(for date: Date) -> String {
     return fmt.string(from: date)
 }
 
+func short(for date: Date) -> String {
+    let fmt = DateFormatter()
+    fmt.dateFormat = "MMdd";
+    return fmt.string(from: date)
+}
+
 func intervalInDays(for start: Date, and end: Date) -> Int {
     let calendar = Calendar.current
     let distance = calendar.dateComponents([.day], from: start, to: end)

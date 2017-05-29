@@ -11,6 +11,10 @@ import UIKit
 class ExerciseTableViewCell: UITableViewCell {
 
     @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var colorBar: UIView!
+    @IBOutlet weak var routineInfoLabel: UILabel!
+    @IBOutlet weak var routineTypeLabel: UILabel!
+    @IBOutlet weak var notesLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

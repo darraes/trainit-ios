@@ -22,31 +22,58 @@ enum TimeUnit: String
     case minute = "min"
 }
 
+func timeUtilStr(_ time: TimeUnit) -> String {
+    switch time {
+    case .second:
+        return "Secs"
+    default:
+        return "Min"
+    }
+}
+
 class Exercise {
     // TODO add activity type
     let type: ExerciseType
     let title: String
+    let notes: String?
     var routine: Routine?
     
-    init (type: ExerciseType, title: String, routine: Routine) {
+    init (type: ExerciseType, title: String, notes: String, routine: Routine) {
         self.type = type
         self.title = title
+        self.notes = notes
         self.routine = routine
     }
     
     init(_ snapshot: DataSnapshot) {
         let exercise = snapshot.value as! [String: AnyObject]
         self.title = exercise["title"] as! String
+        self.notes = exercise["notes"] as? String
         self.type = ExerciseType(rawValue: exercise["type"] as! String)!
         if (type == .repetition) {
             self.routine = RepetitionRoutine(
                 snapshot.childSnapshot(forPath: "routine"))
+        } else if (type == .timed_repetition) {
+            self.routine = TimedRepetitionRoutine(
+                snapshot.childSnapshot(forPath: "routine"))
+        } else {
+            self.routine = nil
         }
-        self.routine = nil
+    }
+    
+    func infoStr() -> String {
+        return self.routine!.infoStr()
+    }
+    
+    func typeStr() -> String {
+        return self.routine!.typeStr()
     }
 }
 
-protocol Routine { }
+protocol Routine {
+    func infoStr() -> String
+    func typeStr() -> String
+}
 
 class RepetitionRoutine : Routine {
     var sessions: Int
@@ -62,6 +89,14 @@ class RepetitionRoutine : Routine {
         self.sessions = routine["sessions"] as! Int
         self.repetitions = routine["repetitions"] as! Int
     }
+    
+    func infoStr() -> String {
+        return "\(self.sessions)/\(self.repetitions)"
+    }
+    
+    func typeStr() -> String {
+        return "Reps"
+    }
 }
 
 class TimedRoutine : Routine {
@@ -71,6 +106,14 @@ class TimedRoutine : Routine {
     init (time: Int, timeUnit: TimeUnit) {
         self.time = time
         self.timeUnit = timeUnit
+    }
+    
+    func infoStr() -> String {
+        return "\(self.time)/"
+    }
+    
+    func typeStr() -> String {
+        return timeUtilStr(self.timeUnit)
     }
 }
 
@@ -83,5 +126,20 @@ class TimedRepetitionRoutine : Routine {
         self.sessions = sessions
         self.time = time
         self.timeUnit = timeUnit
+    }
+    
+    init(_ snapshot: DataSnapshot) {
+        let routine = snapshot.value as! [String: AnyObject]
+        self.sessions = routine["sessions"] as! Int
+        self.time = routine["time"] as! Int
+        self.timeUnit = TimeUnit(rawValue: routine["unit"] as! String)!
+    }
+    
+    func infoStr() -> String {
+        return "\(self.sessions)/\(self.time)"
+    }
+    
+    func typeStr() -> String {
+        return timeUtilStr(self.timeUnit)
     }
 }

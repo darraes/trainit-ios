@@ -42,6 +42,7 @@ class WorkoutManager {
                               user.uid))
         
         workoutPlansRef!.observe(.value, with: { snapshot in
+            Log.debug("Current plan updated")
             self.workoutPlan = WorkoutPlan(snapshot)
             
             // If it is a new week of training, rollover the plan
@@ -53,13 +54,23 @@ class WorkoutManager {
     }
     
     func save(_ workout: Workout) {
+        Log.debug("Saving workout \(workout.id)")
         workout.save()
     }
     
     func rolloverIfNecessary(_ plan: WorkoutPlan) {
         if intervalInDays(for: plan.startDate, and: Date())
             == WorkoutManager.kRolloverIntervalDays {
-            print("Rollover")
+            Log.info("Rolling over current plan")
+            
+            let newPlan = WorkoutPlan.reset(from: plan, for: Date())
+            
+            // Rolling over writes the new plan on the same location therefore
+            // we copy the store reference
+            newPlan.ref = plan.ref
+            
+            // Push to store
+            newPlan.save()
         }
     }
     

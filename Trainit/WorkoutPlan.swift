@@ -11,17 +11,21 @@ import Firebase
 
 class WorkoutPlan {
     
-    let id: String
     let startDate: Date
     var workouts: [Workout]
-    let ref: DatabaseReference?
+    var ref: DatabaseReference?
+    
+    init(_ startDate: Date) {
+        self.startDate = startDate
+        self.workouts = []
+        self.ref = nil
+    }
     
     init(_ snapshot: DataSnapshot) {
         self.workouts = []
         self.ref = snapshot.ref
         
         let plan = snapshot.value as! [String: AnyObject]
-        self.id = plan["id"] as! String
         self.startDate = date(for: plan["start-date"] as! String)
         
         let workouts = snapshot.childSnapshot(forPath: "workouts")
@@ -34,6 +38,20 @@ class WorkoutPlan {
         // sortOnCompletion()
     }
     
+    static func reset(from plan: WorkoutPlan, for date: Date) -> WorkoutPlan {
+        let newPlan = WorkoutPlan(date)
+        
+        for workout in plan.workouts {
+            let newWorkout = Workout.reset(from: workout)
+            newWorkout.setOwnerPlan(newPlan)
+            
+            newPlan.add(workout: newWorkout)
+        }
+
+        return newPlan
+    }
+    
+    
     func toAnyObject() -> Any {
         var myWorkouts: [Any] = []
         for workout in self.workouts{
@@ -42,7 +60,6 @@ class WorkoutPlan {
         
         let start = dateStr(for: self.startDate)
         return [
-            "id": self.id,
             "workouts": myWorkouts,
             "start-date": start
         ]

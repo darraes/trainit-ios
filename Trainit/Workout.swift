@@ -17,7 +17,7 @@ class Workout : Hashable {
     var completions: [Date]
     var plan: WorkoutPlan?
     
-    init (_ id: String, _ type : String, _ sessionPerWeek: Int) {
+    init(_ id: String, _ type : String, _ sessionPerWeek: Int) {
         self.id = id
         self.type = type
         self.sessionsPerWeek = sessionPerWeek
@@ -37,6 +37,10 @@ class Workout : Hashable {
                 self.completions.append(date(for: completion))
             }
         }
+    }
+    
+    static func reset(from workout: Workout) -> Workout {
+        return Workout(workout.id, workout.type, workout.sessionsPerWeek)
     }
     
     var hashValue: Int {

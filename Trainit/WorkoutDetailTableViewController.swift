@@ -11,16 +11,17 @@ import UIKit
 class WorkoutDetailTableViewController: UITableViewController {
     
     var workout: Workout?
+    var activity: Activity?
     var workoutExercises: [Exercise]!
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        let activity = ActivityManager.Instance.activity(by: self.workout!.type)
+        self.activity = ActivityManager.Instance.activity(by: self.workout!.type)
         self.workoutExercises = []
         
-        self.navigationItem.title = activity.title
+        self.navigationItem.title = activity!.title
         self.navigationController?.navigationBar.barTintColor =
-            getColor(for: activity)
+            getColor(for: self.activity!)
     }
     
     override func viewDidLoad() {
@@ -74,6 +75,10 @@ class WorkoutDetailTableViewController: UITableViewController {
             }
             let exercise = self.workoutExercises[indexPath.row]
             cell.titleLabel.text = exercise.title
+            cell.colorBar.backgroundColor = getColor(for: self.activity!)
+            cell.routineInfoLabel.text = exercise.infoStr()
+            cell.routineTypeLabel.text = exercise.typeStr()
+            cell.notesLabel.text = exercise.notes
             
             return cell
     }
