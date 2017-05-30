@@ -21,6 +21,7 @@ import Firebase
 class WorkoutPlanTableViewController: UITableViewController {
     
     var workoutPlan: WorkoutPlan!
+    static let kShowRolloverSegue = "ShowRollover"
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -35,6 +36,12 @@ class WorkoutPlanTableViewController: UITableViewController {
         WorkoutManager.Instance.listen(with: { workoutPlan, isRolling in
             self.workoutPlan = workoutPlan
             self.tableView.reloadData()
+            
+            if (isRolling) {
+                self.navigationController?.performSegue(
+                    withIdentifier: WorkoutPlanTableViewController.kShowRolloverSegue,
+                    sender: nil)
+            }
         })
         
         self.clearsSelectionOnViewWillAppear = true
@@ -202,7 +209,8 @@ class WorkoutPlanTableViewController: UITableViewController {
             
             self.navigationItem.backBarButtonItem = UIBarButtonItem(
                 title:"", style:.plain, target:nil, action:nil)
-            
+        case "ShowRollover":
+            Log.debug("Showing rollover view")
         default:
             let msg = segue.identifier ?? "nil"
             fatalError("Unexpected Segue Identifier; \(msg)")
