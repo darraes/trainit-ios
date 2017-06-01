@@ -12,11 +12,17 @@ import Firebase
 typealias WorkoutPlanCallback = (WorkoutPlan, Bool) -> Void
 typealias ExerciseListCallback = ([Exercise]) -> Void
 
+typealias FetchWorkoutPlanCallback = (WorkoutPlan) -> Void
+typealias FetchHistoryCallback = (History) -> Void
+
 class WorkoutManager {
     // Path to current plans store
     static let kCurrentPlanPathFmt = "workout-plans/%@/current"
     // Path to exercise
     static let kExercisePathFmt = "exercises/%@/%@"
+    // Path to history
+    static let kHistoryPathFmt = "history/%@"
+    
     // Singleton instance
     static let Instance = WorkoutManager()
     // Rollower days
@@ -26,8 +32,10 @@ class WorkoutManager {
     var workoutPlansRef : DatabaseReference?
     // Current instantiated workout
     var workoutPlan: WorkoutPlan?
-    
+    // Activity workouts being read
     var activeWorkoutObservers: [Workout: (ref: DatabaseReference, handle: DatabaseHandle)]
+    // User's history
+    var history: History?
     
     init() {
         self.activeWorkoutObservers = [:]
@@ -35,33 +43,80 @@ class WorkoutManager {
         
     }
     
-    func listen(with callback: @escaping WorkoutPlanCallback) {
+    func listen(onPlan: @escaping WorkoutPlanCallback,
+                onHistory: @escaping FetchHistoryCallback) {
+        let dispatcher = DispatchGroup()
+        
+        dispatcher.enter()
+        self.fetchWorkoutPlan(with: { workoutPlan in
+            dispatcher.leave()
+        })
+        
+        dispatcher.enter()
+        self.fetchHistory(with: { history in
+            onHistory(history)
+            dispatcher.leave()
+        })
+        
+        
+        // If it is a new week of training, rollover the plan
+        dispatcher.notify(queue: .main) {
+            let isRolling = self.rolloverIfNecessary()
+            onPlan(self.workoutPlan!, isRolling)
+        }
+    }
+    
+    func fetchWorkoutPlan(with callback: @escaping FetchWorkoutPlanCallback) {
         let user = UserAccountManager.Instance.current!
         self.workoutPlansRef = Database.database().reference(
             withPath:  String(format: WorkoutManager.kCurrentPlanPathFmt,
                               user.uid))
         
         workoutPlansRef!.observe(.value, with: { snapshot in
-            Log.debug("Current plan updated")
+            Log.debug("Workout plan updated")
             self.workoutPlan = WorkoutPlan(snapshot)
             
-            // If it is a new week of training, rollover the plan
-            let isRolling = self.rolloverIfNecessary(self.workoutPlan!)
-            
             //Return info to caller
-            callback(self.workoutPlan!, isRolling)
+            callback(self.workoutPlan!)
         })
     }
     
-    func save(_ workout: Workout) {
-        Log.debug("Saving workout \(workout.id)")
-        workout.save()
+    func fetchHistory(with callback: @escaping FetchHistoryCallback) {
+        let user = UserAccountManager.Instance.current!
+        let historyRef = Database.database().reference(
+            withPath:String(format: WorkoutManager.kHistoryPathFmt, user.uid))
+        
+        historyRef.queryLimited(toLast: 10).observeSingleEvent(
+            of: .value,
+            with: { (snapshot) in
+                Log.debug("Workout history updated")
+                self.history = History(snapshot)
+                
+                // Return to caller
+                callback(self.history!)
+        })
+        
     }
     
-    func rolloverIfNecessary(_ plan: WorkoutPlan) -> Bool {
+    func rolloverIfNecessary() -> Bool {
+        if (self.workoutPlan == nil || self.history == nil) {
+            Log.error("Plan and/or history not loaded. Failing to rollover")
+            return false
+        }
+        
+        var plan = self.workoutPlan!
+        
         if intervalInDays(for: plan.startDate, and: Date())
-            == WorkoutManager.kRolloverIntervalDays {
+                == WorkoutManager.kRolloverIntervalDays {
             Log.info("Rolling over current plan")
+            
+            if (self.history != nil) {
+                let historyEntry = HistoryEntry(from: self.workoutPlan!)
+                history?.add(entry: historyEntry)
+                // Push to store
+                // TODO error handling
+                history?.save()
+            }
             
             let newPlan = WorkoutPlan.reset(from: plan, for: Date())
             
@@ -70,10 +125,20 @@ class WorkoutManager {
             newPlan.ref = plan.ref
             
             // Push to store
+            // TODO error handling
             newPlan.save()
             return true
         }
         return false
+    }
+    
+    /**
+     * MARK: Workout and Exercise listing
+     */
+    
+    func save(_ workout: Workout) {
+        Log.debug("Saving workout \(workout.id)")
+        workout.save()
     }
     
     func subscribe(for workout: Workout,

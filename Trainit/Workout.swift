@@ -34,7 +34,7 @@ class Workout : Hashable {
         let completionsStr = workout["completions"] as? [String]
         if (completionsStr != nil) {
             for completion in completionsStr! {
-                self.completions.append(date(for: completion))
+                self.completions.append(toDate(for: completion))
             }
         }
     }

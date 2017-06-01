@@ -63,6 +63,12 @@ class LoginViewController: UIViewController {
         { action in
             let emailField = alert.textFields![0]
             let passwordField = alert.textFields![1]
+            let confirmField = alert.textFields![1]
+            
+            if (passwordField.text != confirmField.text) {
+                // TODO do something
+                return
+            }
             
             Auth.auth().createUser(withEmail: emailField.text!,
                                    password: passwordField.text!)
@@ -79,11 +85,17 @@ class LoginViewController: UIViewController {
         
         alert.addTextField { textEmail in
             textEmail.placeholder = "Enter your email"
+            textEmail.keyboardType = .emailAddress
         }
         
         alert.addTextField { textPassword in
             textPassword.isSecureTextEntry = true
             textPassword.placeholder = "Enter your password"
+        }
+        
+        alert.addTextField { confirmPassword in
+            confirmPassword.isSecureTextEntry = true
+            confirmPassword.placeholder = "Confirm your password"
         }
         
         alert.addAction(saveAction)

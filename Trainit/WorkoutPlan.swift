@@ -10,12 +10,13 @@ import Foundation
 import Firebase
 
 class WorkoutPlan {
-    
+    let id: String!
     let startDate: Date
     var workouts: [Workout]
     var ref: DatabaseReference?
     
-    init(_ startDate: Date) {
+    init(_ id : String, _ startDate: Date) {
+        self.id = id
         self.startDate = startDate
         self.workouts = []
         self.ref = nil
@@ -26,7 +27,8 @@ class WorkoutPlan {
         self.ref = snapshot.ref
         
         let plan = snapshot.value as! [String: AnyObject]
-        self.startDate = date(for: plan["start-date"] as! String)
+        self.id = plan["id"] as! String
+        self.startDate = toDate(for: plan["start-date"] as! String)
         
         let workouts = snapshot.childSnapshot(forPath: "workouts")
         for workout in workouts.children {
@@ -39,7 +41,7 @@ class WorkoutPlan {
     }
     
     static func reset(from plan: WorkoutPlan, for date: Date) -> WorkoutPlan {
-        let newPlan = WorkoutPlan(date)
+        let newPlan = WorkoutPlan(plan.id, date)
         
         for workout in plan.workouts {
             let newWorkout = Workout.reset(from: workout)
@@ -61,7 +63,8 @@ class WorkoutPlan {
         let start = dateStr(for: self.startDate)
         return [
             "workouts": myWorkouts,
-            "start-date": start
+            "start-date": start,
+            "id": self.id
         ]
     }
     

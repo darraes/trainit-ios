@@ -8,7 +8,7 @@
 
 import Foundation
 
-func date(for strDate: String) -> Date {
+func toDate(for strDate: String) -> Date {
     let fmt = DateFormatter()
     fmt.dateFormat = "yyyy-MM-dd";
     return fmt.date(from: strDate)!

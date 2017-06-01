@@ -23,7 +23,7 @@
 		654FA2121ED5488F008CB178 /* WorkoutPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 654FA2111ED5488F008CB178 /* WorkoutPlan.swift */; };
 		654FA2151ED64EFD008CB178 /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 654FA2141ED64EFD008CB178 /* Activity.swift */; };
 		654FA2181ED65124008CB178 /* ActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 654FA2171ED65124008CB178 /* ActivityManager.swift */; };
-		65DB25DF1ED80586009377D3 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DB25DE1ED80586009377D3 /* Color.swift */; };
+		65DB25DF1ED80586009377D3 /* ColorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DB25DE1ED80586009377D3 /* ColorUtils.swift */; };
 		65DB25E11ED9DF72009377D3 /* WorkoutDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DB25E01ED9DF72009377D3 /* WorkoutDetailTableViewController.swift */; };
 		65DB25E51ED9E1D1009377D3 /* ExerciseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DB25E41ED9E1D1009377D3 /* ExerciseTableViewCell.swift */; };
 		65DB25E71EDA215E009377D3 /* ThreadingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DB25E61EDA215E009377D3 /* ThreadingUtils.swift */; };
@@ -32,6 +32,7 @@
 		65DB25EE1EDB4D87009377D3 /* Exercise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DB25ED1EDB4D87009377D3 /* Exercise.swift */; };
 		65DB25F01EDCCF4E009377D3 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DB25EF1EDCCF4E009377D3 /* Log.swift */; };
 		65DB25F21EDCE87A009377D3 /* PlanRolloverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DB25F11EDCE87A009377D3 /* PlanRolloverViewController.swift */; };
+		65DB25F41EDE75AB009377D3 /* History.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DB25F31EDE75AB009377D3 /* History.swift */; };
 		B6C649B65DB85C64B5485D7E /* Pods_Trainit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 691587E10435936B67A8F8BF /* Pods_Trainit.framework */; };
 /* End PBXBuildFile section */
 
@@ -69,7 +70,7 @@
 		654FA2111ED5488F008CB178 /* WorkoutPlan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkoutPlan.swift; sourceTree = "<group>"; };
 		654FA2141ED64EFD008CB178 /* Activity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		654FA2171ED65124008CB178 /* ActivityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityManager.swift; sourceTree = "<group>"; };
-		65DB25DE1ED80586009377D3 /* Color.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		65DB25DE1ED80586009377D3 /* ColorUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorUtils.swift; sourceTree = "<group>"; };
 		65DB25E01ED9DF72009377D3 /* WorkoutDetailTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkoutDetailTableViewController.swift; sourceTree = "<group>"; };
 		65DB25E41ED9E1D1009377D3 /* ExerciseTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExerciseTableViewCell.swift; sourceTree = "<group>"; };
 		65DB25E61EDA215E009377D3 /* ThreadingUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadingUtils.swift; sourceTree = "<group>"; };
@@ -79,6 +80,7 @@
 		65DB25ED1EDB4D87009377D3 /* Exercise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exercise.swift; sourceTree = "<group>"; };
 		65DB25EF1EDCCF4E009377D3 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		65DB25F11EDCE87A009377D3 /* PlanRolloverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlanRolloverViewController.swift; sourceTree = "<group>"; };
+		65DB25F31EDE75AB009377D3 /* History.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
 		691587E10435936B67A8F8BF /* Pods_Trainit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Trainit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF26A3FC865C29AB2BB1E943 /* Pods-TrainitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrainitTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-TrainitTests/Pods-TrainitTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -233,6 +235,7 @@
 				654FA2141ED64EFD008CB178 /* Activity.swift */,
 				6523DCFB1ED67D41006D0E63 /* UserAccount.swift */,
 				65DB25ED1EDB4D87009377D3 /* Exercise.swift */,
+				65DB25F31EDE75AB009377D3 /* History.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -251,7 +254,7 @@
 		65DB25DD1ED80574009377D3 /* Util */ = {
 			isa = PBXGroup;
 			children = (
-				65DB25DE1ED80586009377D3 /* Color.swift */,
+				65DB25DE1ED80586009377D3 /* ColorUtils.swift */,
 			);
 			name = Util;
 			sourceTree = "<group>";
@@ -475,11 +478,12 @@
 				65DB25E51ED9E1D1009377D3 /* ExerciseTableViewCell.swift in Sources */,
 				6523DCFF1ED693F8006D0E63 /* DateUtils.swift in Sources */,
 				654FA2061ED3ECB8008CB178 /* WorkoutPlanTableViewController.swift in Sources */,
-				65DB25DF1ED80586009377D3 /* Color.swift in Sources */,
+				65DB25DF1ED80586009377D3 /* ColorUtils.swift in Sources */,
 				654FA2151ED64EFD008CB178 /* Activity.swift in Sources */,
 				654FA2101ED53FC6008CB178 /* Workout.swift in Sources */,
 				65DB25E71EDA215E009377D3 /* ThreadingUtils.swift in Sources */,
 				65DB25EC1EDA9494009377D3 /* UserAccoutManager.swift in Sources */,
+				65DB25F41EDE75AB009377D3 /* History.swift in Sources */,
 				654FA1E41ED3E4CD008CB178 /* AppDelegate.swift in Sources */,
 				6523DCFC1ED67D41006D0E63 /* UserAccount.swift in Sources */,
 				654FA20C1ED3EE9A008CB178 /* WorkoutTableViewCell.swift in Sources */,

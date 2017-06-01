@@ -21,6 +21,7 @@ import Firebase
 class WorkoutPlanTableViewController: UITableViewController {
     
     var workoutPlan: WorkoutPlan!
+    var history: History!
     static let kShowRolloverSegue = "ShowRollover"
     
     override func viewWillAppear(_ animated: Bool) {
@@ -33,16 +34,21 @@ class WorkoutPlanTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        WorkoutManager.Instance.listen(with: { workoutPlan, isRolling in
-            self.workoutPlan = workoutPlan
-            self.tableView.reloadData()
-            
-            if (isRolling) {
-                self.navigationController?.performSegue(
-                    withIdentifier: WorkoutPlanTableViewController.kShowRolloverSegue,
-                    sender: nil)
-            }
-        })
+        WorkoutManager.Instance.listen(
+            onPlan: { workoutPlan, isRolling in
+                self.workoutPlan = workoutPlan
+                self.tableView.reloadData()
+                
+                if (isRolling) {
+                    self.navigationController?.performSegue(
+                        withIdentifier: WorkoutPlanTableViewController.kShowRolloverSegue,
+                        sender: nil)
+                }
+            },
+            onHistory:{ history in
+                self.history = history
+                self.tableView.reloadData()
+            })
         
         self.clearsSelectionOnViewWillAppear = true
     }
