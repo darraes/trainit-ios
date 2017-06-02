@@ -50,23 +50,39 @@ class TimelineTableViewCell: UITableViewCell {
     }
     
     func setupCell() {
+        // Disable clicking
         self.selectionStyle = .none
+        
+        // Making separator line to be full
+        self.preservesSuperviewLayoutMargins = false
+        self.separatorInset = UIEdgeInsets.zero
+        self.layoutMargins = UIEdgeInsets.zero
     }
     
     func setupCompletions() {
-        var workoutPerDay: [String: [Workout]] = [:]
-        for workout in self.plan.workouts {
-            for completion in workout.completions {
-                let idx = weekDayStr(for: completion)
-                if workoutPerDay[idx] == nil {
-                   workoutPerDay[idx] = []
-                }
-                workoutPerDay[idx]?.append(workout)
-            }
+        var workoutPerDay = self.plan!.getCompletionsPerDay()
+        var maxCompletionsPerDay = 0
+        for (_, completions) in workoutPerDay {
+            maxCompletionsPerDay = max(maxCompletionsPerDay, completions.count)
         }
         
         for (day, stack) in self.weekdayToStack {
-            var toAdd = plan.maxCompletionsPerDay
+            stack.spacing = 5
+            let dayLabel = self.getDayLabel(for: day)
+            stack.addArrangedSubview(dayLabel)
+            
+            let tagView = UIStackView()
+            tagView.axis = .vertical
+            tagView.spacing = 5
+            tagView.distribution = .fillEqually
+            tagView.layoutMargins = UIEdgeInsets(top: 0, left: 5, bottom: 5, right: 5)
+            tagView.isLayoutMarginsRelativeArrangement = true
+            
+            stack.addArrangedSubview(tagView)
+            
+            dayLabel.heightAnchor.constraint(equalToConstant: 15).isActive = true
+            
+            var toAdd = maxCompletionsPerDay
             if workoutPerDay[day] != nil {
                 for workout in workoutPerDay[day]! {
                     let label = UILabel()
@@ -76,60 +92,34 @@ class TimelineTableViewCell: UITableViewCell {
                     label.textAlignment = .center
                     label.layer.borderWidth = 1.0
                     label.layer.cornerRadius = 3.0
+                    label.layer.backgroundColor = UIColor(
+                        red: CGFloat(0.95),
+                        green: CGFloat(0.95),
+                        blue: CGFloat(0.95),
+                        alpha: 1.0).cgColor
                     label.layer.borderColor = UIColor(
                         red: CGFloat(0.9),
                         green: CGFloat(0.9),
                         blue: CGFloat(0.9),
                         alpha: 1.0).cgColor
-                    stack.addArrangedSubview(label)
-                    label.leadingAnchor.constraint(equalTo: stack.leadingAnchor, constant: 5).isActive = true
-                    //label.topAnchor.constraint(equalTo: previous.topAnchor, constant: 5).isActive = true
+                    tagView.addArrangedSubview(label)
                     toAdd -= 1
                 }
             }
             while toAdd > 0 {
-                stack.insertArrangedSubview(UIView(), at: 0)
+                tagView.addArrangedSubview(UIView())
                 toAdd -= 1
             }
-            
-            let dayLabel = UILabel()
-            dayLabel.font = UIFont(name: "Helvetica", size: 10)
-            dayLabel.textAlignment = .center
-            dayLabel.text = day
-            dayLabel.backgroundColor = UIColor.darkGray
-            dayLabel.textColor = UIColor.white
-            stack.addArrangedSubview(dayLabel)
-            dayLabel.leadingAnchor.constraint(equalTo: stack.leadingAnchor, constant: 0).isActive = true
-            dayLabel.heightAnchor.constraint(equalToConstant: 20)
-            
-            let topView = stack.arrangedSubviews[0]
-            topView.topAnchor.constraint(equalTo: stack.topAnchor, constant: 5).isActive = true
         }
-        
-        /*
-        for workout in self.plan.workouts {
-            let activity = ActivityManager.Instance.activity(by: workout.type)
-            
-            for completion in workout.completions {
-                let image = UIImage(named: activity.icon)
-                let imageView = UIImageView(image: image!)
-                imageView.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
-                
-                let wrapperView = UIView()
-                //wrapperView.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
-                wrapperView.layer.borderWidth = 1.0
-                wrapperView.layer.borderColor = getColor(for: activity).cgColor
-                
-                
-                imageView.widthAnchor.constraint(equalToConstant: 20).isActive = true
-                imageView.heightAnchor.constraint(equalToConstant: 20).isActive = true
-                wrapperView.addSubview(imageView)
-                imageView.center = CGPoint(x: 25, y: 20)
-                
-                
-                let weekDayIdx = weekDayStr(for: completion)
-                self.weekdayToStack[weekDayIdx]!.addArrangedSubview(wrapperView)
-            }
-        }*/
+    }
+    
+    func getDayLabel(for day: String) -> UILabel {
+        let dayLabel = UILabel()
+        dayLabel.font = UIFont(name: "Helvetica", size: 10)
+        dayLabel.textAlignment = .center
+        dayLabel.text = day
+        dayLabel.backgroundColor = UIColor.gray
+        dayLabel.textColor = UIColor.white
+        return dayLabel
     }
 }

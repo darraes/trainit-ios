@@ -14,7 +14,7 @@ class WorkoutPlan {
     let startDate: Date
     var workouts: [Workout]
     var ref: DatabaseReference?
-    var maxCompletionsPerDay: Int = 0;
+    var completionsPerDay: [String: [Workout]]?
     
     init(_ id : String, _ startDate: Date) {
         self.id = id
@@ -35,13 +35,10 @@ class WorkoutPlan {
         for workout in workouts.children {
             let myWorkout = Workout(workout as! DataSnapshot)
             myWorkout.setOwnerPlan(self)
-            self.add(workout: myWorkout)
-            
-            self.maxCompletionsPerDay = max(self.maxCompletionsPerDay,
-                                            myWorkout.completions.count)
+            self.workouts.append(myWorkout)
         }
         // TODO figure out the sorting experience
-        // sortOnCompletion()
+        sortOnCompletion()
     }
     
     static func reset(from plan: WorkoutPlan, for date: Date) -> WorkoutPlan {
@@ -50,8 +47,7 @@ class WorkoutPlan {
         for workout in plan.workouts {
             let newWorkout = Workout.reset(from: workout)
             newWorkout.setOwnerPlan(newPlan)
-            
-            newPlan.add(workout: newWorkout)
+            newPlan.workouts.append(newWorkout)
         }
 
         return newPlan
@@ -71,17 +67,33 @@ class WorkoutPlan {
             "id": self.id
         ]
     }
-    
-    func add(workout: Workout) {
-        self.workouts.append(workout)
-    }
-    
+
     func workoutCount() -> Int {
         return self.workouts.count
     }
     
     func save() {
         self.ref?.setValue(self.toAnyObject())
+    }
+    
+    func getCompletionsPerDay() -> [String: [Workout]] {
+        if self.completionsPerDay != nil {
+            return self.completionsPerDay!;
+        }
+        
+        var workoutPerDay: [String: [Workout]] = [:]
+        for workout in self.workouts {
+            for completion in workout.completions {
+                let idx = weekDayStr(for: completion)
+                if workoutPerDay[idx] == nil {
+                    workoutPerDay[idx] = []
+                }
+                workoutPerDay[idx]?.append(workout)
+            }
+        }
+        
+        self.completionsPerDay = workoutPerDay
+        return workoutPerDay
     }
     
     func sortOnCompletion() {
