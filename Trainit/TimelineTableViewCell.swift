@@ -10,6 +10,8 @@ import UIKit
 
 class TimelineTableViewCell: UITableViewCell {
     
+    static let kSpacing: Int = 5
+    
     @IBOutlet weak var mondayStackView: UIStackView!
     @IBOutlet weak var tuesdayStackView: UIStackView!
     @IBOutlet weak var wednesdayStackView: UIStackView!
@@ -40,6 +42,7 @@ class TimelineTableViewCell: UITableViewCell {
             return stack
         }
         
+        // TODO This will fail if we add i18n
         self.weekdayToStack["Mon"] = eraseStack(self.mondayStackView)
         self.weekdayToStack["Tue"] = eraseStack(self.tuesdayStackView)
         self.weekdayToStack["Wed"] = eraseStack(self.wednesdayStackView)
@@ -67,59 +70,80 @@ class TimelineTableViewCell: UITableViewCell {
         }
         
         for (day, stack) in self.weekdayToStack {
-            stack.spacing = 5
+            stack.spacing = CGFloat(TimelineTableViewCell.kSpacing)
             let dayLabel = self.getDayLabel(for: day)
             stack.addArrangedSubview(dayLabel)
             
-            let tagView = UIStackView()
-            tagView.axis = .vertical
-            tagView.spacing = 5
-            tagView.distribution = .fillEqually
-            tagView.layoutMargins = UIEdgeInsets(top: 0, left: 5, bottom: 5, right: 5)
-            tagView.isLayoutMarginsRelativeArrangement = true
-            
+            let tagView = self.getTagStackView()
             stack.addArrangedSubview(tagView)
             
             dayLabel.heightAnchor.constraint(equalToConstant: 15).isActive = true
             
-            var toAdd = maxCompletionsPerDay
+            var missing = maxCompletionsPerDay
             if workoutPerDay[day] != nil {
                 for workout in workoutPerDay[day]! {
-                    let label = UILabel()
-                    label.text = ActivityManager.Instance.activity(
-                        by: workout.type).shortName
-                    label.font = UIFont(name: "Helvetica", size: 8)
-                    label.textAlignment = .center
-                    label.layer.borderWidth = 1.0
-                    label.layer.cornerRadius = 3.0
-                    label.layer.backgroundColor = UIColor(
-                        red: CGFloat(0.95),
-                        green: CGFloat(0.95),
-                        blue: CGFloat(0.95),
-                        alpha: 1.0).cgColor
-                    label.layer.borderColor = UIColor(
-                        red: CGFloat(0.9),
-                        green: CGFloat(0.9),
-                        blue: CGFloat(0.9),
-                        alpha: 1.0).cgColor
-                    tagView.addArrangedSubview(label)
-                    toAdd -= 1
+                    let activity = ActivityManager.Instance.activity(
+                        by: workout.type)
+                    tagView.addArrangedSubview(getTag(for: activity))
+                    missing -= 1
                 }
             }
-            while toAdd > 0 {
+            
+            
+            while missing > 0 {
                 tagView.addArrangedSubview(UIView())
-                toAdd -= 1
+                missing -= 1
             }
         }
     }
     
+    func getTag(for activity: Activity) -> UILabel {
+        let label = UILabel()
+        label.text = activity.shortName
+        label.font = UIFont(name: "Helvetica", size: 8)
+        label.textAlignment = .center
+        label.layer.borderWidth = 1.0
+        label.layer.cornerRadius = 3.0
+        label.layer.backgroundColor = UIColor(
+            red: CGFloat(0.95),
+            green: CGFloat(0.95),
+            blue: CGFloat(0.95),
+            alpha: 1.0).cgColor
+        label.layer.borderColor = UIColor(
+            red: CGFloat(0.9),
+            green: CGFloat(0.9),
+            blue: CGFloat(0.9),
+            alpha: 1.0).cgColor
+        return label
+    }
+    
     func getDayLabel(for day: String) -> UILabel {
         let dayLabel = UILabel()
+        
         dayLabel.font = UIFont(name: "Helvetica", size: 10)
         dayLabel.textAlignment = .center
         dayLabel.text = day
+        
         dayLabel.backgroundColor = UIColor.gray
         dayLabel.textColor = UIColor.white
+        
         return dayLabel
+    }
+    
+    func getTagStackView() -> UIStackView {
+        let tagView = UIStackView()
+        
+        tagView.axis = .vertical
+        tagView.spacing = CGFloat(TimelineTableViewCell.kSpacing)
+        tagView.distribution = .fillEqually
+        
+        tagView.layoutMargins = UIEdgeInsets(
+            top: 0,
+            left: CGFloat(TimelineTableViewCell.kSpacing),
+            bottom: CGFloat(TimelineTableViewCell.kSpacing),
+            right: CGFloat(TimelineTableViewCell.kSpacing))
+        tagView.isLayoutMarginsRelativeArrangement = true
+        
+        return tagView
     }
 }

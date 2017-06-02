@@ -33,7 +33,6 @@
 		65DB25F01EDCCF4E009377D3 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DB25EF1EDCCF4E009377D3 /* Log.swift */; };
 		65DB25F21EDCE87A009377D3 /* PlanRolloverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DB25F11EDCE87A009377D3 /* PlanRolloverViewController.swift */; };
 		65DB25F41EDE75AB009377D3 /* History.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DB25F31EDE75AB009377D3 /* History.swift */; };
-		65F343FD1EE1025A0026071F /* TimelineControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F343FC1EE1025A0026071F /* TimelineControl.swift */; };
 		65F343FF1EE1072F0026071F /* TimelineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F343FE1EE1072F0026071F /* TimelineTableViewCell.swift */; };
 		B6C649B65DB85C64B5485D7E /* Pods_Trainit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 691587E10435936B67A8F8BF /* Pods_Trainit.framework */; };
 /* End PBXBuildFile section */
@@ -83,7 +82,6 @@
 		65DB25EF1EDCCF4E009377D3 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		65DB25F11EDCE87A009377D3 /* PlanRolloverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlanRolloverViewController.swift; sourceTree = "<group>"; };
 		65DB25F31EDE75AB009377D3 /* History.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
-		65F343FC1EE1025A0026071F /* TimelineControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineControl.swift; sourceTree = "<group>"; };
 		65F343FE1EE1072F0026071F /* TimelineTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineTableViewCell.swift; sourceTree = "<group>"; };
 		691587E10435936B67A8F8BF /* Pods_Trainit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Trainit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF26A3FC865C29AB2BB1E943 /* Pods-TrainitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrainitTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-TrainitTests/Pods-TrainitTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -216,7 +214,6 @@
 			children = (
 				654FA20B1ED3EE9A008CB178 /* WorkoutTableViewCell.swift */,
 				65DB25E41ED9E1D1009377D3 /* ExerciseTableViewCell.swift */,
-				65F343FC1EE1025A0026071F /* TimelineControl.swift */,
 				65F343FE1EE1072F0026071F /* TimelineTableViewCell.swift */,
 			);
 			name = Controls;
@@ -487,7 +484,6 @@
 				65DB25DF1ED80586009377D3 /* ColorUtils.swift in Sources */,
 				654FA2151ED64EFD008CB178 /* Activity.swift in Sources */,
 				654FA2101ED53FC6008CB178 /* Workout.swift in Sources */,
-				65F343FD1EE1025A0026071F /* TimelineControl.swift in Sources */,
 				65DB25E71EDA215E009377D3 /* ThreadingUtils.swift in Sources */,
 				65F343FF1EE1072F0026071F /* TimelineTableViewCell.swift in Sources */,
 				65DB25EC1EDA9494009377D3 /* UserAccoutManager.swift in Sources */,

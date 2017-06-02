@@ -84,6 +84,7 @@ class WorkoutPlan {
         var workoutPerDay: [String: [Workout]] = [:]
         for workout in self.workouts {
             for completion in workout.completions {
+                // TODO will have issues with i18n
                 let idx = weekDayStr(for: completion)
                 if workoutPerDay[idx] == nil {
                     workoutPerDay[idx] = []
