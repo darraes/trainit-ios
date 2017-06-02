@@ -69,22 +69,41 @@ class TimelineTableViewCell: UITableViewCell {
             var toAdd = plan.maxCompletionsPerDay
             if workoutPerDay[day] != nil {
                 for workout in workoutPerDay[day]! {
-                    let activity = ActivityManager.Instance.activity(by: workout.type)
                     let label = UILabel()
-                    label.text = workout.type
-                    label.font = UIFont(name: "Helvetica", size: 10)
+                    label.text = ActivityManager.Instance.activity(
+                        by: workout.type).shortName
+                    label.font = UIFont(name: "Helvetica", size: 8)
                     label.textAlignment = .center
                     label.layer.borderWidth = 1.0
-                    label.layer.borderColor = getColor(for: activity).cgColor
+                    label.layer.cornerRadius = 3.0
+                    label.layer.borderColor = UIColor(
+                        red: CGFloat(0.9),
+                        green: CGFloat(0.9),
+                        blue: CGFloat(0.9),
+                        alpha: 1.0).cgColor
                     stack.addArrangedSubview(label)
                     label.leadingAnchor.constraint(equalTo: stack.leadingAnchor, constant: 5).isActive = true
+                    //label.topAnchor.constraint(equalTo: previous.topAnchor, constant: 5).isActive = true
                     toAdd -= 1
                 }
             }
             while toAdd > 0 {
-                stack.addArrangedSubview(UIView())
+                stack.insertArrangedSubview(UIView(), at: 0)
                 toAdd -= 1
             }
+            
+            let dayLabel = UILabel()
+            dayLabel.font = UIFont(name: "Helvetica", size: 10)
+            dayLabel.textAlignment = .center
+            dayLabel.text = day
+            dayLabel.backgroundColor = UIColor.darkGray
+            dayLabel.textColor = UIColor.white
+            stack.addArrangedSubview(dayLabel)
+            dayLabel.leadingAnchor.constraint(equalTo: stack.leadingAnchor, constant: 0).isActive = true
+            dayLabel.heightAnchor.constraint(equalToConstant: 20)
+            
+            let topView = stack.arrangedSubviews[0]
+            topView.topAnchor.constraint(equalTo: stack.topAnchor, constant: 5).isActive = true
         }
         
         /*

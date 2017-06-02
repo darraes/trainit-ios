@@ -86,7 +86,7 @@ class WorkoutPlanTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView,
                             heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.row == 0 {
-            return 70
+            return CGFloat(17 * (self.workoutPlan!.maxCompletionsPerDay + 1))
         }
         return 50.0
     }

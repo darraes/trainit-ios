@@ -12,17 +12,20 @@ class Activity {
     
     let type: String
     let title: String
+    let shortName: String
     let icon: String
     let banner: String
     var themeColorRgb: (red: Float, green: Float, blue: Float)
     
     init(type: String,
          title: String,
+         shortName: String,
          icon: String,
          banner: String,
          themeColorRgb: (Float, Float, Float)) {
         self.type = type
         self.title = title
+        self.shortName = shortName
         self.icon = icon
         self.banner = banner
         self.themeColorRgb = themeColorRgb

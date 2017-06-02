@@ -17,6 +17,7 @@ class ActivityManager {
         activities = [:]
         activities["running"] = Activity(type: "running",
                                          title: "Running",
+                                         shortName: "Run",
                                          icon: "running_icon",
                                          banner: "running_banner",
                                          themeColorRgb: (254.0 / 255.0,
@@ -25,6 +26,7 @@ class ActivityManager {
         
         activities["biking"] = Activity(type: "biking",
                                         title: "Biking",
+                                        shortName: "Bike",
                                         icon: "biking_icon",
                                         banner: "biking_banner",
                                         themeColorRgb: (65.0 / 255.0,
@@ -33,6 +35,7 @@ class ActivityManager {
         
         activities["yoga"] = Activity(type: "yoga",
                                       title: "Yoga",
+                                      shortName: "Yoga",
                                       icon: "yoga_icon",
                                       banner: "yoga_banner",
                                       themeColorRgb: (130.0 / 255.0,
@@ -41,6 +44,7 @@ class ActivityManager {
         
         activities["swimming"] = Activity(type: "swimming",
                                           title: "Swimming",
+                                          shortName: "Swim",
                                           icon: "swimming_icon",
                                           banner: "swimming_banner",
                                           themeColorRgb: (3.0 / 255.0,
@@ -49,6 +53,7 @@ class ActivityManager {
         
         activities["cardio"] = Activity(type: "cardio",
                                         title: "Cardio",
+                                        shortName: "Cardio",
                                         icon: "cardio_icon",
                                         banner: "cardio_banner",
                                         themeColorRgb: (255.0 / 255.0,
@@ -57,6 +62,7 @@ class ActivityManager {
         
         activities["crossfit"] = Activity(type: "crossfit",
                                           title: "Crossfit",
+                                          shortName: "Xfit",
                                           icon: "crossfit_icon",
                                           banner: "crossfit_banner",
                                           themeColorRgb: (189.0 / 255.0,
@@ -65,6 +71,7 @@ class ActivityManager {
         
         activities["leg_training"] = Activity(type: "leg_training",
                                               title: "Lower Body",
+                                              shortName: "Lower B",
                                               icon: "leg_icon",
                                               banner: "leg_training_banner",
                                               themeColorRgb: (14.0 / 255.0,
@@ -74,12 +81,14 @@ class ActivityManager {
         activities["upper_body_training"] = Activity(
             type: "upper_body_training",
             title: "Upper Body",
+            shortName: "Upper B",
             icon: "weight_icon",
             banner: "weight_banner",
             themeColorRgb: (0.25, 0.25, 0.25))
         
         activities["core"] = Activity(type: "core",
                                         title: "Core Strength",
+                                        shortName: "Core",
                                         icon: "core_icon",
                                         banner: "core_training_banner",
                                         themeColorRgb: (6.0 / 255.0,
