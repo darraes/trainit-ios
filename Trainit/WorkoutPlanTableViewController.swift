@@ -85,6 +85,9 @@ class WorkoutPlanTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView,
                             heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.row == 0 {
+            return 70
+        }
         return 50.0
     }
     
@@ -101,7 +104,7 @@ class WorkoutPlanTableViewController: UITableViewController {
                             + " TimelineTableViewCell.")
                 }
                 
-                cell.selectionStyle = .none
+                cell.setup(for: self.workoutPlan)
                 return cell
             } else {
                 let cellIdentifier = "WorkoutTableViewCell"
@@ -180,7 +183,8 @@ class WorkoutPlanTableViewController: UITableViewController {
             }
             
             let workouts = self.workoutPlan.workouts
-            let workout = workouts[editActionsForRowAt.row]
+            let workout = workouts[editActionsForRowAt.row
+                - WorkoutPlanTableViewController.kCellOffset]
             let activity = ActivityManager.Instance.activity(by: workout.type)
             
             let completeAction = UITableViewRowAction(style: .normal,

@@ -20,6 +20,11 @@ func dateStr(for date: Date) -> String {
     return fmt.string(from: date)
 }
 
+func weekDay(for date: Date) -> Int {
+    let calendar = Calendar.current
+    return calendar.dateComponents([.weekday], from: date).weekday!
+}
+
 func weekDayStr(for date: Date) -> String {
     let fmt = DateFormatter()
     fmt.dateFormat = "E";

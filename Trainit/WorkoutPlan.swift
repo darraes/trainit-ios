@@ -14,6 +14,7 @@ class WorkoutPlan {
     let startDate: Date
     var workouts: [Workout]
     var ref: DatabaseReference?
+    var maxCompletionsPerDay: Int = 0;
     
     init(_ id : String, _ startDate: Date) {
         self.id = id
@@ -35,6 +36,9 @@ class WorkoutPlan {
             let myWorkout = Workout(workout as! DataSnapshot)
             myWorkout.setOwnerPlan(self)
             self.add(workout: myWorkout)
+            
+            self.maxCompletionsPerDay = max(self.maxCompletionsPerDay,
+                                            myWorkout.completions.count)
         }
         // TODO figure out the sorting experience
         // sortOnCompletion()

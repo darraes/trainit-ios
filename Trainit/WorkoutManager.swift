@@ -35,6 +35,8 @@ class WorkoutManager {
     var activeWorkoutObservers: [Workout: (ref: DatabaseReference, handle: DatabaseHandle)]
     // User's history
     var history: History?
+    // used to wait for multiple requests in parallel
+    var semaphore: DispatchGroup?
     
     init() {
         self.activeWorkoutObservers = [:]
@@ -45,29 +47,35 @@ class WorkoutManager {
     func listen(onPlan: @escaping WorkoutPlanCallback,
                 onHistory: @escaping HistoryCallback,
                 onRolling: @escaping RollingCallback) {
-        let semaphore = DispatchGroup()
+        self.semaphore = DispatchGroup()
         
-        semaphore.enter()
+        self.semaphore!.enter()
         self.fetchWorkoutPlan(with: { workoutPlan in
             onPlan(workoutPlan)
-            semaphore.leave()
+            if (self.semaphore != nil) {
+                self.semaphore!.leave()
+            }
         })
         
         if self.history == nil {
-            semaphore.enter()
+            self.semaphore!.enter()
             self.fetchHistory(with: { history in
                 onHistory(history)
-                semaphore.leave()
+                if (self.semaphore != nil) {
+                    self.semaphore!.leave()
+                }
             })
         }
         
         // If it is a new week of training, rollover the plan
-        semaphore.notify(queue: .main) {
+        self.semaphore!.notify(queue: .main) {
             let isRolling = self.rolloverIfNecessary()
             if isRolling {
                 onRolling(self.workoutPlan!, self.history!)
             }
         }
+        
+        self.semaphore = nil
     }
     
     func fetchWorkoutPlan(with callback: @escaping WorkoutPlanCallback) {
