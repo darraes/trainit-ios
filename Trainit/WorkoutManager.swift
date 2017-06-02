@@ -9,11 +9,10 @@
 import Foundation
 import Firebase
 
-typealias WorkoutPlanCallback = (WorkoutPlan, Bool) -> Void
 typealias ExerciseListCallback = ([Exercise]) -> Void
-
-typealias FetchWorkoutPlanCallback = (WorkoutPlan) -> Void
-typealias FetchHistoryCallback = (History) -> Void
+typealias RollingCallback = (WorkoutPlan, History) -> Void
+typealias WorkoutPlanCallback = (WorkoutPlan) -> Void
+typealias HistoryCallback = (History) -> Void
 
 class WorkoutManager {
     // Path to current plans store
@@ -44,29 +43,34 @@ class WorkoutManager {
     }
     
     func listen(onPlan: @escaping WorkoutPlanCallback,
-                onHistory: @escaping FetchHistoryCallback) {
-        let dispatcher = DispatchGroup()
+                onHistory: @escaping HistoryCallback,
+                onRolling: @escaping RollingCallback) {
+        let semaphore = DispatchGroup()
         
-        dispatcher.enter()
+        semaphore.enter()
         self.fetchWorkoutPlan(with: { workoutPlan in
-            dispatcher.leave()
+            onPlan(workoutPlan)
+            semaphore.leave()
         })
         
-        dispatcher.enter()
-        self.fetchHistory(with: { history in
-            onHistory(history)
-            dispatcher.leave()
-        })
-        
+        if self.history == nil {
+            semaphore.enter()
+            self.fetchHistory(with: { history in
+                onHistory(history)
+                semaphore.leave()
+            })
+        }
         
         // If it is a new week of training, rollover the plan
-        dispatcher.notify(queue: .main) {
+        semaphore.notify(queue: .main) {
             let isRolling = self.rolloverIfNecessary()
-            onPlan(self.workoutPlan!, isRolling)
+            if isRolling {
+                onRolling(self.workoutPlan!, self.history!)
+            }
         }
     }
     
-    func fetchWorkoutPlan(with callback: @escaping FetchWorkoutPlanCallback) {
+    func fetchWorkoutPlan(with callback: @escaping WorkoutPlanCallback) {
         let user = UserAccountManager.Instance.current!
         self.workoutPlansRef = Database.database().reference(
             withPath:  String(format: WorkoutManager.kCurrentPlanPathFmt,
@@ -81,7 +85,7 @@ class WorkoutManager {
         })
     }
     
-    func fetchHistory(with callback: @escaping FetchHistoryCallback) {
+    func fetchHistory(with callback: @escaping HistoryCallback) {
         let user = UserAccountManager.Instance.current!
         let historyRef = Database.database().reference(
             withPath:String(format: WorkoutManager.kHistoryPathFmt, user.uid))
@@ -104,7 +108,7 @@ class WorkoutManager {
             return false
         }
         
-        var plan = self.workoutPlan!
+        let plan = self.workoutPlan!
         
         if intervalInDays(for: plan.startDate, and: Date())
                 == WorkoutManager.kRolloverIntervalDays {

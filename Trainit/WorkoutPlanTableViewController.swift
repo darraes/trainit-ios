@@ -23,6 +23,7 @@ class WorkoutPlanTableViewController: UITableViewController {
     var workoutPlan: WorkoutPlan!
     var history: History!
     static let kShowRolloverSegue = "ShowRollover"
+    static let kCellOffset = 1
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -35,19 +36,22 @@ class WorkoutPlanTableViewController: UITableViewController {
         super.viewDidLoad()
         
         WorkoutManager.Instance.listen(
-            onPlan: { workoutPlan, isRolling in
+            onPlan: { workoutPlan in
                 self.workoutPlan = workoutPlan
                 self.tableView.reloadData()
-                
-                if (isRolling) {
-                    self.navigationController?.performSegue(
-                        withIdentifier: WorkoutPlanTableViewController.kShowRolloverSegue,
-                        sender: nil)
-                }
             },
             onHistory:{ history in
                 self.history = history
                 self.tableView.reloadData()
+            },
+            onRolling: {workoutPlan, history in
+                self.workoutPlan = workoutPlan
+                self.history = history
+                self.tableView.reloadData()
+                
+                self.navigationController?.performSegue(
+                    withIdentifier: WorkoutPlanTableViewController.kShowRolloverSegue,
+                    sender: nil)
             })
         
         self.clearsSelectionOnViewWillAppear = true
@@ -74,7 +78,9 @@ class WorkoutPlanTableViewController: UITableViewController {
             return 0;
         }
         
+        // We add one cell for the timeline
         return workoutPlan.workoutCount()
+            + WorkoutPlanTableViewController.kCellOffset
     }
     
     override func tableView(_ tableView: UITableView,
@@ -85,19 +91,34 @@ class WorkoutPlanTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView,
                             cellForRowAt indexPath: IndexPath)
         -> UITableViewCell {
-            let cellIdentifier = "WorkoutTableViewCell"
-            
-            guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: cellIdentifier,
-                for: indexPath) as? WorkoutTableViewCell  else {
-                    fatalError("The dequeued cell is not an instance of"
-                        + " WorkoutTableViewCell.")
+            if indexPath.row < WorkoutPlanTableViewController.kCellOffset {
+                let cellIdentifier = "TimelineTableViewCell"
+                
+                guard let cell = tableView.dequeueReusableCell(
+                    withIdentifier: cellIdentifier,
+                    for: indexPath) as? TimelineTableViewCell  else {
+                        fatalError("The dequeued cell is not an instance of"
+                            + " TimelineTableViewCell.")
+                }
+                
+                cell.selectionStyle = .none
+                return cell
+            } else {
+                let cellIdentifier = "WorkoutTableViewCell"
+                
+                guard let cell = tableView.dequeueReusableCell(
+                    withIdentifier: cellIdentifier,
+                    for: indexPath) as? WorkoutTableViewCell  else {
+                        fatalError("The dequeued cell is not an instance of"
+                            + " WorkoutTableViewCell.")
+                }
+                
+                // Fetches the appropriate meal for the data source layout.
+                let workout = self.workoutPlan.workouts[
+                    indexPath.row - WorkoutPlanTableViewController.kCellOffset]
+                setup(cell, for: workout);
+                return cell
             }
-            
-            // Fetches the appropriate meal for the data source layout.
-            let workout = self.workoutPlan.workouts[indexPath.row]
-            setup(cell, for: workout);
-            return cell
     }
     
     func setup( _ cell: WorkoutTableViewCell, for workout: Workout) {
@@ -143,14 +164,21 @@ class WorkoutPlanTableViewController: UITableViewController {
     
     
     override func tableView(_ tableView: UITableView,
-                            canEditRowAt indexPath: IndexPath)
-        -> Bool {
-            return true
+                            canEditRowAt indexPath: IndexPath) -> Bool {
+        if indexPath.row < WorkoutPlanTableViewController.kCellOffset {
+            return false
+        }
+        return true
     }
     
     override func tableView(_ tableView: UITableView,
                             editActionsForRowAt: IndexPath)
         -> [UITableViewRowAction]? {
+            if editActionsForRowAt.row
+                < WorkoutPlanTableViewController.kCellOffset {
+                return []
+            }
+            
             let workouts = self.workoutPlan.workouts
             let workout = workouts[editActionsForRowAt.row]
             let activity = ActivityManager.Instance.activity(by: workout.type)
@@ -209,7 +237,8 @@ class WorkoutPlanTableViewController: UITableViewController {
                     "The selected cell is not being displayed by the table")
             }
             
-            let workout = self.workoutPlan.workouts[indexPath.row]
+            let workout = self.workoutPlan.workouts[
+                indexPath.row - WorkoutPlanTableViewController.kCellOffset]
             detailController.workout = workout
             cell.setSelected(false, animated: true)
             

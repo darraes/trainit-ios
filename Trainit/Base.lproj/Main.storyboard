@@ -74,6 +74,14 @@
                                     <segue destination="6eZ-oY-hsc" kind="show" identifier="ShowWorkoutDetail" id="zrB-aM-1Kf"/>
                                 </connections>
                             </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="TimelineTableViewCell" id="hUq-Qd-bWa" customClass="TimelineTableViewCell" customModule="Trainit" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="78" width="375" height="50"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="hUq-Qd-bWa" id="6YK-xi-5Zj">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
                         </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="kzh-dJ-6zo" id="8MY-s2-tfN"/>
