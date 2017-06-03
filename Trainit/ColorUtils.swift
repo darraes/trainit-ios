@@ -33,3 +33,11 @@ func getDefaultNavBarColor() -> UIColor {
         blue: CGFloat(144.0 / 255.0),
         alpha: 1.0)
 }
+
+func grayScale(_ rate: Float) -> UIColor {
+    return UIColor(
+        red: CGFloat(rate),
+        green: CGFloat(rate),
+        blue: CGFloat(rate),
+        alpha: 1.0)
+}

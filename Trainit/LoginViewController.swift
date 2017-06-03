@@ -45,7 +45,6 @@ class LoginViewController: UIViewController {
         Auth.auth().signIn(withEmail: textFieldLoginEmail.text!,
                            password: textFieldLoginPassword.text!)
         { user, error in
-            print(user!)
             if error == nil {
                 self.successfulLogin(user)
             }

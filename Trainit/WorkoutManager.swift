@@ -47,6 +47,8 @@ class WorkoutManager {
     func listen(onPlan: @escaping WorkoutPlanCallback,
                 onHistory: @escaping HistoryCallback,
                 onRolling: @escaping RollingCallback) {
+        Log.debug("Listening for \(UserAccountManager.Instance.current!.email)")
+        
         self.semaphore = DispatchGroup()
         
         self.semaphore!.enter()

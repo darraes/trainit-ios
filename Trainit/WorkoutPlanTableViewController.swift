@@ -22,8 +22,12 @@ class WorkoutPlanTableViewController: UITableViewController {
     
     var workoutPlan: WorkoutPlan!
     var history: History!
+    
+    static let kShowDetailSegue = "ShowWorkoutDetail"
     static let kShowRolloverSegue = "ShowRollover"
-    static let kCellOffset = 1
+    
+    static let kTimelineSection = 0
+    static let kWorkoutCellHeight: CGFloat = 50.0
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -36,14 +40,17 @@ class WorkoutPlanTableViewController: UITableViewController {
         super.viewDidLoad()
         
         WorkoutManager.Instance.listen(
+            // Listening for workout updates - completions / undos
             onPlan: { workoutPlan in
                 self.workoutPlan = workoutPlan
                 self.tableView.reloadData()
             },
+            // Fetches the user history
             onHistory:{ history in
                 self.history = history
                 self.tableView.reloadData()
             },
+            // Listening for when the week is over and the plan is rolling
             onRolling: {workoutPlan, history in
                 self.workoutPlan = workoutPlan
                 self.history = history
@@ -57,50 +64,64 @@ class WorkoutPlanTableViewController: UITableViewController {
         self.clearsSelectionOnViewWillAppear = true
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    /**
+     *  ======= MARK: User Actions
+     */
+    
+    @IBAction func logoffAction(_ sender: UIBarButtonItem) {
+        print("logoff")
     }
     
-    // MARK: - Table view data source
+    /**
+     *  ======= MARK: Table view data source
+     */
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         if (self.workoutPlan === nil) {
             return 0;
         }
         
-        return 1
+        // One section for the timeline and one for the workout list
+        return 2
     }
     
     override func tableView(_ tableView: UITableView,
                             numberOfRowsInSection section: Int) -> Int {
         if (self.workoutPlan === nil) {
+            // We could not load the plan, so no cells anywhere
             return 0;
         }
         
-        // We add one cell for the timeline
-        return workoutPlan.workoutCount()
-            + WorkoutPlanTableViewController.kCellOffset
+        switch section {
+        case WorkoutPlanTableViewController.kTimelineSection:
+            // Timeline has only 1 cell
+            return (self.workoutPlan!.maxCompletions() > 0) ? 1 : 0
+        default:
+            // One per workout
+            return workoutPlan.workoutCount()
+        }
     }
     
     override func tableView(_ tableView: UITableView,
                             heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.row == 0 {
-            let workoutPerDay = self.workoutPlan!.getCompletionsPerDay()
-            var maxCompletionsPerDay = 0
-            for (_, completions) in workoutPerDay {
-                maxCompletionsPerDay = max(maxCompletionsPerDay, completions.count)
-            }
-            
-            return CGFloat(20 * (maxCompletionsPerDay + 1))
+        if indexPath.section == WorkoutPlanTableViewController.kTimelineSection
+        {
+            // We ned to find the day with most completions as that day will
+            // dictate the height of the cell. We need space for the larger
+            let maxCompletionsPerDay = self.workoutPlan!.maxCompletions()
+            return CGFloat(TimelineTableViewCell.kCompletionHeight
+                            * (maxCompletionsPerDay + 1))
         }
-        return 50.0
+        
+        // Workout cell height
+        return WorkoutPlanTableViewController.kWorkoutCellHeight
     }
     
     override func tableView(_ tableView: UITableView,
                             cellForRowAt indexPath: IndexPath)
         -> UITableViewCell {
-            if indexPath.row < WorkoutPlanTableViewController.kCellOffset {
+            if indexPath.section ==
+                    WorkoutPlanTableViewController.kTimelineSection {
                 let cellIdentifier = "TimelineTableViewCell"
                 
                 guard let cell = tableView.dequeueReusableCell(
@@ -123,76 +144,39 @@ class WorkoutPlanTableViewController: UITableViewController {
                 }
                 
                 // Fetches the appropriate meal for the data source layout.
-                let workout = self.workoutPlan.workouts[
-                    indexPath.row - WorkoutPlanTableViewController.kCellOffset]
-                setup(cell, for: workout);
+                let workout = self.workoutPlan.workouts[indexPath.row]
+                cell.setup(for: workout)
                 return cell
             }
     }
     
-    func setup( _ cell: WorkoutTableViewCell, for workout: Workout) {
-        let activity = ActivityManager.Instance.activity(by: workout.type)
-        
-        cell.workoutLabel.text = activity.title
-        cell.workoutImage.image = UIImage(named: activity.icon)
-        cell.borderView.layer.borderWidth = 1.0
-        cell.borderView.layer.cornerRadius = 23.0
-        cell.borderView.layer.borderColor = getColor(for: activity).cgColor
-        
-        cell.completedLabel.text =
-            "\(workout.getSessionsCompleted())/\(workout.sessionsPerWeek)"
-        
-        var completionsStr: String = ""
-        for (idx, completion) in workout.completions.enumerated() {
-            completionsStr += weekDayStr(for: completion)
-            if (idx != workout.completions.count - 1) {
-                completionsStr += ", "
-            }
-        }
-        cell.completionsLabel.text = completionsStr
-        
-        self.toggleCompletion(cell, workout)
-    }
-    
-    
-    
-    func toggleCompletion(_ cell: WorkoutTableViewCell,
-                                 _ workout: Workout) {
-        if (workout.getSessionsCompleted() < workout.sessionsPerWeek) {
-            cell.accessoryType = .none
-            cell.completedLabel.isHidden = false
-            cell.completionsLabel.isHidden = false
-            cell.workoutLabel?.textColor = UIColor.black
-        } else {
-            cell.accessoryType = .checkmark
-            cell.completedLabel.isHidden = true
-            cell.completionsLabel.isHidden = true
-            cell.workoutLabel?.textColor = UIColor.gray
-        }
-    }
-    
-    
     override func tableView(_ tableView: UITableView,
                             canEditRowAt indexPath: IndexPath) -> Bool {
-        if indexPath.row < WorkoutPlanTableViewController.kCellOffset {
+        if indexPath.section == WorkoutPlanTableViewController.kTimelineSection
+        {
+            // Timeline is non-editable
             return false
         }
+        // Workout cells are editable
         return true
     }
     
     override func tableView(_ tableView: UITableView,
                             editActionsForRowAt: IndexPath)
         -> [UITableViewRowAction]? {
-            if editActionsForRowAt.row
-                < WorkoutPlanTableViewController.kCellOffset {
+            
+            // timeline cell has no edit actions
+            if editActionsForRowAt.section ==
+                    WorkoutPlanTableViewController.kTimelineSection {
                 return []
             }
             
+            // Workout actions
             let workouts = self.workoutPlan.workouts
-            let workout = workouts[editActionsForRowAt.row
-                - WorkoutPlanTableViewController.kCellOffset]
+            let workout = workouts[editActionsForRowAt.row]
             let activity = ActivityManager.Instance.activity(by: workout.type)
             
+            // Marks one session of the workout as completed
             let completeAction = UITableViewRowAction(style: .normal,
                                                       title: "Complete")
             { (action, index) in
@@ -202,6 +186,7 @@ class WorkoutPlanTableViewController: UITableViewController {
             }
             completeAction.backgroundColor = getColor(for: activity)
             
+            // Un-marks the completion of one session of the workout
             let undoAction = UITableViewRowAction(style: .normal,
                                                   title: "Undo")
             { (action, index) in
@@ -212,26 +197,60 @@ class WorkoutPlanTableViewController: UITableViewController {
             undoAction.backgroundColor = .lightGray
             
             var actions: [UITableViewRowAction] = []
+            
+            // If there are session left, enable complete actions
             if !workout.allCompleted() {
                 actions.append(completeAction)
             }
+            
+            // If at least one session was completed, enable the undo
             if workout.getSessionsCompleted() > 0 {
                 actions.append(undoAction)
             }
             return actions
     }
     
+    override func tableView(_ tableView: UITableView,
+                            viewForHeaderInSection section: Int) -> UIView? {
+
+        if section == WorkoutPlanTableViewController.kTimelineSection {
+            return nil
+        }
+        
+        let progress = self.workoutPlan!.getProgress()
+        let progressLabel = UILabel()
+        
+        progressLabel.font = UIFont(name: "Helvetica", size: 10)
+        progressLabel.textAlignment = .center
+        progressLabel.text = "You completed \(progress.completed) out of"
+            + " \(progress.total) -"
+            + " \((Int)(100.0 * Float(progress.completed) / Float(progress.total)))%"
+        
+        progressLabel.backgroundColor = grayScale(0.9)
+        
+        return progressLabel
+    }
     
-    // MARK: - Navigation
+    override func tableView(_ tableView: UITableView,
+                            heightForHeaderInSection section: Int) -> CGFloat {
+        if section == WorkoutPlanTableViewController.kTimelineSection {
+            return 0
+        }
+        return 15
+    }
+    
+    
+    /**
+     *  ======= MARK: Navigation
+     */
     
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
         super.prepare(for: segue, sender: sender)
         
         switch(segue.identifier ?? "") {
             
-        case "ShowWorkoutDetail":
+        case WorkoutPlanTableViewController.kShowDetailSegue:
             guard let detailController = segue.destination
                     as? WorkoutDetailTableViewController else {
                 fatalError("Unexpected destination: \(segue.destination)")
@@ -247,22 +266,23 @@ class WorkoutPlanTableViewController: UITableViewController {
                     "The selected cell is not being displayed by the table")
             }
             
-            let workout = self.workoutPlan.workouts[
-                indexPath.row - WorkoutPlanTableViewController.kCellOffset]
+            // Pass the desired workout to the details view
+            let workout = self.workoutPlan.workouts[indexPath.row]
             detailController.workout = workout
+            
+            // We de-select the cell for when this view returns, no cell is
+            // selected
             cell.setSelected(false, animated: true)
             
             self.navigationItem.backBarButtonItem = UIBarButtonItem(
                 title:"", style:.plain, target:nil, action:nil)
-        case "ShowRollover":
+            
+        case WorkoutPlanTableViewController.kShowRolloverSegue:
             Log.debug("Showing rollover view")
+            
         default:
             let msg = segue.identifier ?? "nil"
             fatalError("Unexpected Segue Identifier; \(msg)")
         }
     }
-    
-    
-    
-    
 }

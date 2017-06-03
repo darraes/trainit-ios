@@ -36,4 +36,18 @@ class UserAccountManager {
             onError(error as NSError?)
         }
     }
+    
+    func signOut(onError: @escaping AuthErrorCallback) {
+        if self.current == nil {
+            Log.critical("Sign out called with no user logged in")
+        }
+        
+        self.current = nil
+        do {
+            try Auth.auth().signOut()
+        } catch let signOutError as NSError {
+            Log.error("Error signing out: \(signOutError)")
+            onError(signOutError)
+        }
+    }
 }

@@ -97,6 +97,27 @@ class WorkoutPlan {
         return workoutPerDay
     }
     
+    func maxCompletions() -> Int {
+        let workoutPerDay = self.getCompletionsPerDay()
+        var maxCompletionsPerDay = 0
+        for (_, completions) in workoutPerDay {
+            maxCompletionsPerDay = max(maxCompletionsPerDay, completions.count)
+        }
+        return maxCompletionsPerDay
+    }
+    
+    func getProgress() -> (completed: Int, total: Int) {
+        var completed = 0
+        var total = 0
+        
+        for workout in self.workouts {
+            total += workout.sessionsPerWeek
+            completed += workout.completions.count
+        }
+        
+        return (completed: completed, total: total)
+    }
+    
     func sortOnCompletion() {
         self.workouts.sort(by:{ (left, right) in
             let leftDelta = left.sessionsPerWeek - left.getSessionsCompleted()

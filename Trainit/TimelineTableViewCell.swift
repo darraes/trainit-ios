@@ -11,6 +11,7 @@ import UIKit
 class TimelineTableViewCell: UITableViewCell {
     
     static let kSpacing: Int = 5
+    static let kCompletionHeight: Int = 20
     
     @IBOutlet weak var mondayStackView: UIStackView!
     @IBOutlet weak var tuesdayStackView: UIStackView!
@@ -64,10 +65,7 @@ class TimelineTableViewCell: UITableViewCell {
     
     func setupCompletions() {
         var workoutPerDay = self.plan!.getCompletionsPerDay()
-        var maxCompletionsPerDay = 0
-        for (_, completions) in workoutPerDay {
-            maxCompletionsPerDay = max(maxCompletionsPerDay, completions.count)
-        }
+        let maxCompletionsPerDay = self.plan!.maxCompletions()
         
         for (day, stack) in self.weekdayToStack {
             stack.spacing = CGFloat(TimelineTableViewCell.kSpacing)
@@ -99,21 +97,16 @@ class TimelineTableViewCell: UITableViewCell {
     
     func getTag(for activity: Activity) -> UILabel {
         let label = UILabel()
+        
         label.text = activity.shortName
-        label.font = UIFont(name: "Helvetica", size: 8)
+        label.font = UIFont(name: "Helvetica", size: 9)
         label.textAlignment = .center
+        
         label.layer.borderWidth = 1.0
         label.layer.cornerRadius = 3.0
-        label.layer.backgroundColor = UIColor(
-            red: CGFloat(0.95),
-            green: CGFloat(0.95),
-            blue: CGFloat(0.95),
-            alpha: 1.0).cgColor
-        label.layer.borderColor = UIColor(
-            red: CGFloat(0.9),
-            green: CGFloat(0.9),
-            blue: CGFloat(0.9),
-            alpha: 1.0).cgColor
+        label.layer.backgroundColor = grayScale(0.97).cgColor
+        label.layer.borderColor = grayScale(0.88).cgColor
+        
         return label
     }
     
@@ -124,7 +117,7 @@ class TimelineTableViewCell: UITableViewCell {
         dayLabel.textAlignment = .center
         dayLabel.text = day
         
-        dayLabel.backgroundColor = UIColor.gray
+        dayLabel.backgroundColor = UIColor.darkGray
         dayLabel.textColor = UIColor.white
         
         return dayLabel
