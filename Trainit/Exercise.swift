@@ -57,7 +57,8 @@ class Exercise {
             self.routine = TimedRepetitionRoutine(
                 snapshot.childSnapshot(forPath: "routine"))
         } else {
-            self.routine = nil
+            self.routine = TimedRoutine(
+                snapshot.childSnapshot(forPath: "routine"))
         }
     }
     
@@ -108,8 +109,14 @@ class TimedRoutine : Routine {
         self.timeUnit = timeUnit
     }
     
+    init(_ snapshot: DataSnapshot) {
+        let routine = snapshot.value as! [String: AnyObject]
+        self.time = routine["time"] as! Int
+        self.timeUnit = TimeUnit(rawValue: routine["unit"] as! String)!
+    }
+    
     func infoStr() -> String {
-        return "\(self.time)/"
+        return "\(self.time)"
     }
     
     func typeStr() -> String {

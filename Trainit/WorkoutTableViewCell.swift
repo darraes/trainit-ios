@@ -17,7 +17,7 @@ class WorkoutTableViewCell: UITableViewCell {
     @IBOutlet weak var completionsLabel: UILabel!
     @IBOutlet weak var borderView: UIView!
     
-    func setup(for workout: Workout) {
+    func configure(for workout: Workout) {
         let activity = ActivityManager.Instance.activity(by: workout.type)
         
         self.workoutLabel.text = activity.title

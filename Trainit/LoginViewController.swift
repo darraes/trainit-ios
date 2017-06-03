@@ -20,10 +20,10 @@ class LoginViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        Auth.auth().addStateDidChangeListener(
-            { auth, user in
+        UserAccountManager.Instance.loggedUser(with:
+            { user in
                 if user != nil {
-                    self.successfulLogin(user)
+                    self.successfulLogin()
                 }
             }
         )
@@ -42,13 +42,15 @@ class LoginViewController: UIViewController {
     
     
     @IBAction func loginDidTouch(_ sender: Any) {
-        Auth.auth().signIn(withEmail: textFieldLoginEmail.text!,
-                           password: textFieldLoginPassword.text!)
-        { user, error in
-            if error == nil {
-                self.successfulLogin(user)
-            }
-        }
+        UserAccountManager.Instance.signIn(
+            email: textFieldLoginEmail.text!,
+            password: textFieldLoginPassword.text!,
+            with: { user, error in
+                if error != nil {
+                    // TODO error message
+                }
+                self.successfulLogin()
+        })
     }
     
     @IBAction func signUpDidTouch(_ sender: Any) {
@@ -69,19 +71,21 @@ class LoginViewController: UIViewController {
                 return
             }
             
-            Auth.auth().createUser(withEmail: emailField.text!,
-                                   password: passwordField.text!)
+            UserAccountManager.Instance.createUser(
+                email: emailField.text!,
+                password: passwordField.text!)
             { user, error in
                 if error != nil {
                     // TODO proper error handling
                     print(error!)
                 }
+                // TODO login
             }
         }
         
         let cancelAction = UIAlertAction(title: "Cancel",
                                          style: .default)
-        
+
         alert.addTextField { textEmail in
             textEmail.placeholder = "Enter your email"
             textEmail.keyboardType = .emailAddress
@@ -103,24 +107,9 @@ class LoginViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    func successfulLogin(_ user: User?) {
-        UserAccountManager.Instance.current = UserAccount(user!)
+    func successfulLogin() {
         self.performSegue(
             withIdentifier: LoginViewController.kSuccessLoginSegue,
             sender: nil)
     }
-}
-
-extension LoginViewController: UITextFieldDelegate {
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField == textFieldLoginEmail {
-            textFieldLoginPassword.becomeFirstResponder()
-        }
-        if textField == textFieldLoginPassword {
-            textField.resignFirstResponder()
-        }
-        return true
-    }
-    
 }

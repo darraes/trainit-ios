@@ -74,12 +74,7 @@ class WorkoutDetailTableViewController: UITableViewController {
                         + " ExerciseTableViewCell.")
             }
             let exercise = self.workoutExercises[indexPath.row]
-            cell.titleLabel.text = exercise.title
-            cell.colorBar.backgroundColor = getColor(for: self.activity!)
-            cell.routineInfoLabel.text = exercise.infoStr()
-            cell.routineTypeLabel.text = exercise.typeStr()
-            cell.notesLabel.text = exercise.notes
-            
+            cell.configure(for: exercise, activity: self.activity!)
             return cell
     }
 }

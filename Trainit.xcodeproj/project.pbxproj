@@ -246,10 +246,8 @@
 		654FA2161ED65112008CB178 /* Runtime */ = {
 			isa = PBXGroup;
 			children = (
+				65F344001EE341CE0026071F /* Managers */,
 				6523DCFD1ED693E0006D0E63 /* Util */,
-				654FA2171ED65124008CB178 /* ActivityManager.swift */,
-				6523DCF91ED67C1A006D0E63 /* WorkoutManager.swift */,
-				65DB25EB1EDA9494009377D3 /* UserAccoutManager.swift */,
 			);
 			name = Runtime;
 			sourceTree = "<group>";
@@ -260,6 +258,16 @@
 				65DB25DE1ED80586009377D3 /* ColorUtils.swift */,
 			);
 			name = Util;
+			sourceTree = "<group>";
+		};
+		65F344001EE341CE0026071F /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				654FA2171ED65124008CB178 /* ActivityManager.swift */,
+				6523DCF91ED67C1A006D0E63 /* WorkoutManager.swift */,
+				65DB25EB1EDA9494009377D3 /* UserAccoutManager.swift */,
+			);
+			name = Managers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

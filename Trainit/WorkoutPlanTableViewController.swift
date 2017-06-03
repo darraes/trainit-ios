@@ -57,7 +57,8 @@ class WorkoutPlanTableViewController: UITableViewController {
                 self.tableView.reloadData()
                 
                 self.navigationController?.performSegue(
-                    withIdentifier: WorkoutPlanTableViewController.kShowRolloverSegue,
+                    withIdentifier:
+                        WorkoutPlanTableViewController.kShowRolloverSegue,
                     sender: nil)
             })
         
@@ -69,7 +70,13 @@ class WorkoutPlanTableViewController: UITableViewController {
      */
     
     @IBAction func logoffAction(_ sender: UIBarButtonItem) {
-        print("logoff")
+        let success = UserAccountManager.Instance.signOut(onError: { error in
+            // TODO do something
+        })
+        
+        if success {
+            dismiss(animated: true, completion: nil)
+        }
     }
     
     /**
@@ -131,7 +138,7 @@ class WorkoutPlanTableViewController: UITableViewController {
                             + " TimelineTableViewCell.")
                 }
                 
-                cell.setup(for: self.workoutPlan)
+                cell.configure(for: self.workoutPlan)
                 return cell
             } else {
                 let cellIdentifier = "WorkoutTableViewCell"
@@ -145,7 +152,7 @@ class WorkoutPlanTableViewController: UITableViewController {
                 
                 // Fetches the appropriate meal for the data source layout.
                 let workout = self.workoutPlan.workouts[indexPath.row]
-                cell.setup(for: workout)
+                cell.configure(for: workout)
                 return cell
             }
     }
@@ -211,20 +218,22 @@ class WorkoutPlanTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView,
-                            viewForHeaderInSection section: Int) -> UIView? {
+                            viewForFooterInSection section: Int) -> UIView? {
 
-        if section == WorkoutPlanTableViewController.kTimelineSection {
+        if section != WorkoutPlanTableViewController.kTimelineSection {
             return nil
         }
         
         let progress = self.workoutPlan!.getProgress()
-        let progressLabel = UILabel()
+        let progressPct = (Int)(100.0 * Float(progress.completed)
+            / Float(progress.total))
         
+        let progressLabel = UILabel()
         progressLabel.font = UIFont(name: "Helvetica", size: 10)
         progressLabel.textAlignment = .center
         progressLabel.text = "You completed \(progress.completed) out of"
             + " \(progress.total) -"
-            + " \((Int)(100.0 * Float(progress.completed) / Float(progress.total)))%"
+            + " \(progressPct)%"
         
         progressLabel.backgroundColor = grayScale(0.9)
         
@@ -232,24 +241,21 @@ class WorkoutPlanTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView,
-                            heightForHeaderInSection section: Int) -> CGFloat {
+                            heightForFooterInSection section: Int) -> CGFloat {
         if section == WorkoutPlanTableViewController.kTimelineSection {
-            return 0
+            return CGFloat(TimelineTableViewCell.kProgressFooterHeight)
         }
-        return 15
+        return 0
     }
-    
     
     /**
      *  ======= MARK: Navigation
      */
     
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         
         switch(segue.identifier ?? "") {
-            
         case WorkoutPlanTableViewController.kShowDetailSegue:
             guard let detailController = segue.destination
                     as? WorkoutDetailTableViewController else {

@@ -16,15 +16,12 @@ class ExerciseTableViewCell: UITableViewCell {
     @IBOutlet weak var routineTypeLabel: UILabel!
     @IBOutlet weak var notesLabel: UILabel!
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    func configure(for exercise: Exercise, activity: Activity) {
+        self.titleLabel.text = exercise.title
+        self.colorBar.backgroundColor = getColor(for: activity)
+        self.routineInfoLabel.text = exercise.infoStr()
+        self.routineTypeLabel.text = exercise.typeStr()
+        self.notesLabel.text = exercise.notes
     }
 
 }

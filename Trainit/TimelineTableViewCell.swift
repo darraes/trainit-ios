@@ -12,6 +12,7 @@ class TimelineTableViewCell: UITableViewCell {
     
     static let kSpacing: Int = 5
     static let kCompletionHeight: Int = 20
+    static let kProgressFooterHeight: Int = 15
     
     @IBOutlet weak var mondayStackView: UIStackView!
     @IBOutlet weak var tuesdayStackView: UIStackView!
@@ -26,15 +27,15 @@ class TimelineTableViewCell: UITableViewCell {
     
     //MARK: Initialization
     
-    func setup(for plan: WorkoutPlan) {
+    func configure(for plan: WorkoutPlan) {
         self.plan = plan
         
-        setupDailyStacks()
-        setupCell()
-        setupCompletions()
+        configureDailyStacks()
+        configureCell()
+        configureCompletions()
     }
     
-    func setupDailyStacks() {
+    func configureDailyStacks() {
         let eraseStack = { (stack: UIStackView) -> UIStackView in
             for subview in stack.arrangedSubviews {
                 stack.removeArrangedSubview(subview)
@@ -53,7 +54,7 @@ class TimelineTableViewCell: UITableViewCell {
         self.weekdayToStack["Sun"] = eraseStack(self.sundayStackView)
     }
     
-    func setupCell() {
+    func configureCell() {
         // Disable clicking
         self.selectionStyle = .none
         
@@ -63,16 +64,16 @@ class TimelineTableViewCell: UITableViewCell {
         self.layoutMargins = UIEdgeInsets.zero
     }
     
-    func setupCompletions() {
+    func configureCompletions() {
         var workoutPerDay = self.plan!.getCompletionsPerDay()
         let maxCompletionsPerDay = self.plan!.maxCompletions()
         
         for (day, stack) in self.weekdayToStack {
             stack.spacing = CGFloat(TimelineTableViewCell.kSpacing)
-            let dayLabel = self.getDayLabel(for: day)
+            let dayLabel = self.createDayLabel(for: day)
             stack.addArrangedSubview(dayLabel)
             
-            let tagView = self.getTagStackView()
+            let tagView = self.createTagStackView()
             stack.addArrangedSubview(tagView)
             
             dayLabel.heightAnchor.constraint(equalToConstant: 15).isActive = true
@@ -82,7 +83,7 @@ class TimelineTableViewCell: UITableViewCell {
                 for workout in workoutPerDay[day]! {
                     let activity = ActivityManager.Instance.activity(
                         by: workout.type)
-                    tagView.addArrangedSubview(getTag(for: activity))
+                    tagView.addArrangedSubview(createTag(for: activity))
                     missing -= 1
                 }
             }
@@ -95,7 +96,7 @@ class TimelineTableViewCell: UITableViewCell {
         }
     }
     
-    func getTag(for activity: Activity) -> UILabel {
+    func createTag(for activity: Activity) -> UILabel {
         let label = UILabel()
         
         label.text = activity.shortName
@@ -110,7 +111,7 @@ class TimelineTableViewCell: UITableViewCell {
         return label
     }
     
-    func getDayLabel(for day: String) -> UILabel {
+    func createDayLabel(for day: String) -> UILabel {
         let dayLabel = UILabel()
         
         dayLabel.font = UIFont(name: "Helvetica", size: 10)
@@ -123,7 +124,7 @@ class TimelineTableViewCell: UITableViewCell {
         return dayLabel
     }
     
-    func getTagStackView() -> UIStackView {
+    func createTagStackView() -> UIStackView {
         let tagView = UIStackView()
         
         tagView.axis = .vertical
