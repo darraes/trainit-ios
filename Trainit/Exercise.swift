@@ -22,21 +22,12 @@ enum TimeUnit: String
     case minute = "min"
 }
 
-func timeUtilStr(_ time: TimeUnit) -> String {
-    switch time {
-    case .second:
-        return "Secs"
-    default:
-        return "Min"
-    }
-}
-
 class Exercise {
     // TODO add activity type
     let type: ExerciseType
     let title: String
+    let routine: Routine
     let notes: String?
-    var routine: Routine?
     
     init (type: ExerciseType, title: String, notes: String, routine: Routine) {
         self.type = type
@@ -63,11 +54,11 @@ class Exercise {
     }
     
     func infoStr() -> String {
-        return self.routine!.infoStr()
+        return self.routine.infoStr()
     }
     
     func typeStr() -> String {
-        return self.routine!.typeStr()
+        return self.routine.typeStr()
     }
 }
 
@@ -77,8 +68,8 @@ protocol Routine {
 }
 
 class RepetitionRoutine : Routine {
-    var sessions: Int
-    var repetitions: Int
+    let sessions: Int
+    let repetitions: Int
     
     init (sessions: Int, repetitions: Int) {
         self.sessions = sessions
@@ -101,8 +92,8 @@ class RepetitionRoutine : Routine {
 }
 
 class TimedRoutine : Routine {
-    var time: Int
-    var timeUnit: TimeUnit
+    let time: Int
+    let timeUnit: TimeUnit
     
     init (time: Int, timeUnit: TimeUnit) {
         self.time = time
@@ -125,9 +116,9 @@ class TimedRoutine : Routine {
 }
 
 class TimedRepetitionRoutine : Routine {
-    var time: Int
-    var timeUnit: TimeUnit
-    var sessions: Int
+    let time: Int
+    let timeUnit: TimeUnit
+    let sessions: Int
     
     init (sessions: Int, time: Int, timeUnit: TimeUnit) {
         self.sessions = sessions

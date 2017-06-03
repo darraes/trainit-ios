@@ -15,17 +15,23 @@ class Workout : Hashable {
     let type: String
     let sessionsPerWeek: Int
     var completions: [Date]
-    var plan: WorkoutPlan?
+    var plan: WorkoutPlan
     
-    init(_ id: String, _ type : String, _ sessionPerWeek: Int) {
+    init(owner plan: WorkoutPlan, _ id: String, _ type : String, _ sessionPerWeek: Int) {
+        self.plan = plan
         self.id = id
         self.type = type
         self.sessionsPerWeek = sessionPerWeek
         self.completions = []
     }
     
-    init(_ snapshot: DataSnapshot) {
+    /**
+     * Snapshot must point to workout-plans/{user-id}/{plan}/workouts/{id}
+     */
+    init(_ snapshot: DataSnapshot, owner plan: WorkoutPlan) {
         let workout = snapshot.value as! [String: AnyObject]
+        
+        self.plan = plan
         self.id = workout["id"] as! String
         self.type = workout["type"] as! String
         self.sessionsPerWeek = workout["sessions_per_week"] as! Int
@@ -39,8 +45,11 @@ class Workout : Hashable {
         }
     }
     
-    static func reset(from workout: Workout) -> Workout {
-        return Workout(workout.id, workout.type, workout.sessionsPerWeek)
+    static func reset(from workout: Workout, owner plan: WorkoutPlan) -> Workout {
+        return Workout(owner: plan,
+                       workout.id,
+                       workout.type,
+                       workout.sessionsPerWeek)
     }
     
     var hashValue: Int {
@@ -53,13 +62,9 @@ class Workout : Hashable {
         return lhs.id == rhs.id && lhs.type == lhs.type
     }
     
-    func setOwnerPlan(_ plan: WorkoutPlan) {
-        self.plan = plan
-    }
-    
     func save() {
         // The reference lives in the wrapping plan so we saved it from there
-        self.plan!.save()
+        self.plan.save()
     }
     
     func toAnyObject() -> Any {
@@ -75,11 +80,11 @@ class Workout : Hashable {
         ]
     }
     
-    func getSessionsCompleted() -> Int {
+    func completedSessionsCount() -> Int {
         return self.completions.count
     }
     
-    func allCompleted() -> Bool {
+    func isAllCompleted() -> Bool {
         return self.completions.count >= self.sessionsPerWeek
     }
     

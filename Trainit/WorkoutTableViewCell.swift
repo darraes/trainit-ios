@@ -27,7 +27,7 @@ class WorkoutTableViewCell: UITableViewCell {
         self.borderView.layer.borderColor = getColor(for: activity).cgColor
         
         self.completedLabel.text =
-        "\(workout.getSessionsCompleted())/\(workout.sessionsPerWeek)"
+        "\(workout.completedSessionsCount())/\(workout.sessionsPerWeek)"
         
         var completionsStr: String = ""
         for (idx, completion) in workout.completions.enumerated() {
@@ -42,7 +42,7 @@ class WorkoutTableViewCell: UITableViewCell {
     }
     
     func toggleCompletion(_ workout: Workout) {
-        if (workout.getSessionsCompleted() < workout.sessionsPerWeek) {
+        if (workout.completedSessionsCount() < workout.sessionsPerWeek) {
             self.accessoryType = .none
             self.completedLabel.isHidden = false
             self.completionsLabel.isHidden = false

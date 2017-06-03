@@ -12,9 +12,10 @@ import Firebase
 class WorkoutPlan {
     let id: String!
     let startDate: Date
-    var workouts: [Workout]
-    var ref: DatabaseReference?
-    var completionsPerDay: [String: [Workout]]?
+    private(set) var workouts: [Workout]
+    
+    // Actual pointer to FIRDatabase store for plan
+    private(set) var ref: DatabaseReference?
     
     init(_ id : String, _ startDate: Date) {
         self.id = id
@@ -23,36 +24,39 @@ class WorkoutPlan {
         self.ref = nil
     }
     
+    /**
+     * Snapshot must point to workout-plans/{user-id}/{plan}
+     */
     init(_ snapshot: DataSnapshot) {
-        self.workouts = []
         self.ref = snapshot.ref
         
         let plan = snapshot.value as! [String: AnyObject]
         self.id = plan["id"] as! String
         self.startDate = toDate(for: plan["start-date"] as! String)
         
+        self.workouts = []
         let workouts = snapshot.childSnapshot(forPath: "workouts")
         for workout in workouts.children {
-            let myWorkout = Workout(workout as! DataSnapshot)
-            myWorkout.setOwnerPlan(self)
+            let myWorkout = Workout(workout as! DataSnapshot, owner: self)
             self.workouts.append(myWorkout)
         }
-        // TODO figure out the sorting experience
+
         sortOnCompletion()
     }
     
-    static func reset(from plan: WorkoutPlan, for date: Date) -> WorkoutPlan {
+    static func reset(from plan: WorkoutPlan,
+                      for date: Date,
+                      with ref: DatabaseReference?) -> WorkoutPlan {
         let newPlan = WorkoutPlan(plan.id, date)
+        newPlan.ref = ref
         
         for workout in plan.workouts {
-            let newWorkout = Workout.reset(from: workout)
-            newWorkout.setOwnerPlan(newPlan)
+            let newWorkout = Workout.reset(from: workout, owner: newPlan)
             newPlan.workouts.append(newWorkout)
         }
 
         return newPlan
     }
-    
     
     func toAnyObject() -> Any {
         var myWorkouts: [Any] = []
@@ -67,20 +71,24 @@ class WorkoutPlan {
             "id": self.id
         ]
     }
+    
+    func isAttached() -> Bool {
+        return self.ref != nil
+    }
+    
+    func attach(ref: DatabaseReference) {
+        self.ref = ref
+    }
+    
+    func save() {
+        self.ref!.setValue(self.toAnyObject())
+    }
 
     func workoutCount() -> Int {
         return self.workouts.count
     }
     
-    func save() {
-        self.ref?.setValue(self.toAnyObject())
-    }
-    
     func getCompletionsPerDay() -> [String: [Workout]] {
-        if self.completionsPerDay != nil {
-            return self.completionsPerDay!;
-        }
-        
         var workoutPerDay: [String: [Workout]] = [:]
         for workout in self.workouts {
             for completion in workout.completions {
@@ -93,7 +101,6 @@ class WorkoutPlan {
             }
         }
         
-        self.completionsPerDay = workoutPerDay
         return workoutPerDay
     }
     
@@ -118,13 +125,15 @@ class WorkoutPlan {
         return (completed: completed, total: total)
     }
     
-    func sortOnCompletion() {
+    private func sortOnCompletion() {
         self.workouts.sort(by:{ (left, right) in
-            let leftDelta = left.sessionsPerWeek - left.getSessionsCompleted()
-            let rightDelta = right.sessionsPerWeek - right.getSessionsCompleted()
+            let leftDelta = left.sessionsPerWeek - left.completedSessionsCount()
+            let rightDelta = right.sessionsPerWeek
+                - right.completedSessionsCount()
             
             if leftDelta == rightDelta {
-                return left.getSessionsCompleted() < right.getSessionsCompleted()
+                return left.completedSessionsCount()
+                    < right.completedSessionsCount()
             }
             
             return leftDelta > rightDelta

@@ -25,8 +25,6 @@ class TimelineTableViewCell: UITableViewCell {
     var weekdayToStack: [String:UIStackView] = [:]
     var plan: WorkoutPlan!
     
-    //MARK: Initialization
-    
     func configure(for plan: WorkoutPlan) {
         self.plan = plan
         
@@ -35,7 +33,7 @@ class TimelineTableViewCell: UITableViewCell {
         configureCompletions()
     }
     
-    func configureDailyStacks() {
+    private func configureDailyStacks() {
         let eraseStack = { (stack: UIStackView) -> UIStackView in
             for subview in stack.arrangedSubviews {
                 stack.removeArrangedSubview(subview)
@@ -54,7 +52,7 @@ class TimelineTableViewCell: UITableViewCell {
         self.weekdayToStack["Sun"] = eraseStack(self.sundayStackView)
     }
     
-    func configureCell() {
+    private func configureCell() {
         // Disable clicking
         self.selectionStyle = .none
         
@@ -64,7 +62,7 @@ class TimelineTableViewCell: UITableViewCell {
         self.layoutMargins = UIEdgeInsets.zero
     }
     
-    func configureCompletions() {
+    private func configureCompletions() {
         var workoutPerDay = self.plan!.getCompletionsPerDay()
         let maxCompletionsPerDay = self.plan!.maxCompletions()
         
@@ -96,7 +94,7 @@ class TimelineTableViewCell: UITableViewCell {
         }
     }
     
-    func createTag(for activity: Activity) -> UILabel {
+    private func createTag(for activity: Activity) -> UILabel {
         let label = UILabel()
         
         label.text = activity.shortName
@@ -111,7 +109,7 @@ class TimelineTableViewCell: UITableViewCell {
         return label
     }
     
-    func createDayLabel(for day: String) -> UILabel {
+    private func createDayLabel(for day: String) -> UILabel {
         let dayLabel = UILabel()
         
         dayLabel.font = UIFont(name: "Helvetica", size: 10)
@@ -124,7 +122,7 @@ class TimelineTableViewCell: UITableViewCell {
         return dayLabel
     }
     
-    func createTagStackView() -> UIStackView {
+    private func createTagStackView() -> UIStackView {
         let tagView = UIStackView()
         
         tagView.axis = .vertical

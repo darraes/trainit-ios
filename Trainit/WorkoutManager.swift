@@ -132,11 +132,11 @@ class WorkoutManager {
                 history?.save()
             }
             
-            let newPlan = WorkoutPlan.reset(from: plan, for: Date())
-            
             // Rolling over writes the new plan on the same location therefore
             // we copy the store reference
-            newPlan.ref = plan.ref
+            let newPlan = WorkoutPlan.reset(from: plan,
+                                            for: Date(),
+                                            with: plan.ref)
             
             // Push to store
             // TODO error handling

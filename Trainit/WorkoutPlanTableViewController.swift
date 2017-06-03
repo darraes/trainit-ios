@@ -206,12 +206,12 @@ class WorkoutPlanTableViewController: UITableViewController {
             var actions: [UITableViewRowAction] = []
             
             // If there are session left, enable complete actions
-            if !workout.allCompleted() {
+            if !workout.isAllCompleted() {
                 actions.append(completeAction)
             }
             
             // If at least one session was completed, enable the undo
-            if workout.getSessionsCompleted() > 0 {
+            if workout.completedSessionsCount() > 0 {
                 actions.append(undoAction)
             }
             return actions

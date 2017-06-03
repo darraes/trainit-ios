@@ -19,7 +19,6 @@ class ActivityManager {
                                          title: "Running",
                                          shortName: "Run",
                                          icon: "running_icon",
-                                         banner: "running_banner",
                                          themeColorRgb: (254.0 / 255.0,
                                                          194.0 / 255.0,
                                                          0.0 / 255.0))
@@ -28,7 +27,6 @@ class ActivityManager {
                                         title: "Biking",
                                         shortName: "Bike",
                                         icon: "biking_icon",
-                                        banner: "biking_banner",
                                         themeColorRgb: (65.0 / 255.0,
                                                         156.0 / 255.0,
                                                         114.0 / 255.0))
@@ -37,7 +35,6 @@ class ActivityManager {
                                       title: "Yoga",
                                       shortName: "Yoga",
                                       icon: "yoga_icon",
-                                      banner: "yoga_banner",
                                       themeColorRgb: (130.0 / 255.0,
                                                       77.0 / 255.0,
                                                       159.0 / 255.0))
@@ -46,7 +43,6 @@ class ActivityManager {
                                           title: "Swimming",
                                           shortName: "Swim",
                                           icon: "swimming_icon",
-                                          banner: "swimming_banner",
                                           themeColorRgb: (3.0 / 255.0,
                                                           153.0 / 255.0,
                                                           226.0 / 255.0))
@@ -55,7 +51,6 @@ class ActivityManager {
                                         title: "Cardio",
                                         shortName: "Cardio",
                                         icon: "cardio_icon",
-                                        banner: "cardio_banner",
                                         themeColorRgb: (255.0 / 255.0,
                                                         103.0 / 255.0,
                                                         43.0 / 255.0))
@@ -64,7 +59,6 @@ class ActivityManager {
                                           title: "Crossfit",
                                           shortName: "Xfit",
                                           icon: "crossfit_icon",
-                                          banner: "crossfit_banner",
                                           themeColorRgb: (189.0 / 255.0,
                                                           47.0 / 255.0,
                                                           47.0 / 255.0))
@@ -73,7 +67,6 @@ class ActivityManager {
                                               title: "Lower Body",
                                               shortName: "Lower B",
                                               icon: "leg_icon",
-                                              banner: "leg_training_banner",
                                               themeColorRgb: (14.0 / 255.0,
                                                               88.0 / 255.0,
                                                               54.0 / 255.0))
@@ -83,17 +76,15 @@ class ActivityManager {
             title: "Upper Body",
             shortName: "Upper B",
             icon: "weight_icon",
-            banner: "weight_banner",
             themeColorRgb: (0.25, 0.25, 0.25))
         
         activities["core"] = Activity(type: "core",
-                                        title: "Core Strength",
-                                        shortName: "Core",
-                                        icon: "core_icon",
-                                        banner: "core_training_banner",
-                                        themeColorRgb: (6.0 / 255.0,
-                                                        57.0 / 255.0,
-                                                        122.0 / 255.0))
+                                      title: "Core Strength",
+                                      shortName: "Core",
+                                      icon: "core_icon",
+                                      themeColorRgb: (6.0 / 255.0,
+                                                      57.0 / 255.0,
+                                                      122.0 / 255.0))
         
     }
     

@@ -8,6 +8,15 @@
 
 import Foundation
 
+func timeUtilStr(_ time: TimeUnit) -> String {
+    switch time {
+    case .second:
+        return "Secs"
+    default:
+        return "Minutes"
+    }
+}
+
 func toDate(for strDate: String) -> Date {
     let fmt = DateFormatter()
     fmt.dateFormat = "yyyy-MM-dd";
