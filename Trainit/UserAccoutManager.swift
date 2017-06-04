@@ -18,6 +18,12 @@ class UserAccountManager {
     // Current logged in user
     var current: UserAccount?
     
+    /**
+     * Creates a new user with password authentication mode
+     *
+     * @callback user=user, error=nil on success
+     *           user=nil, error=error on failure
+     */
     func createUser(email: String,
                     password: String,
                     with callback: @escaping AuthCallback) {
@@ -35,6 +41,12 @@ class UserAccountManager {
         }
     }
     
+    /**
+     * Signs in a user with password authentication mode
+     *
+     * @callback user=user, error=nil on success
+     *           user=nil, error=error on failure
+     */
     func signIn(email: String,
                 password: String,
                 with callback: @escaping AuthCallback) {
@@ -42,6 +54,7 @@ class UserAccountManager {
                            password: password)
         { (user: User?, error: Error?) in
             if error == nil {
+                Log.info("User \(email) is signed in")
                 self.current = UserAccount(user!)
                 callback(self.current!, nil)
                 return
@@ -53,6 +66,12 @@ class UserAccountManager {
         }
     }
     
+    /**
+     * Signs out a user
+     *
+     * @onError not called on success
+     *          error=error on failure
+     */
     func signOut(onError: @escaping AuthErrorCallback) -> Bool {
         if self.current == nil {
             Log.critical("Sign out called with no user logged in")
@@ -61,6 +80,7 @@ class UserAccountManager {
         self.current = nil
         do {
             try Auth.auth().signOut()
+            Log.info("User \(self.current!.email) signed out")
             return true
         } catch let signOutError as NSError {
             Log.error("Error signing out: \(signOutError)")
@@ -69,15 +89,27 @@ class UserAccountManager {
         return false
     }
     
+    /**
+     * Signs in a user with password authentication mode using authentication
+     * data from keychain
+     *
+     * @callback user=user on success
+     *           user=nil on failure
+     */
     func loggedUser(with callback: @escaping (UserAccount?) -> Void) {
         Auth.auth().addStateDidChangeListener(
             { auth, user in
                 if user == nil {
+                    // User is not logged in. Return to caller for sign in
+                    self.current = nil
                     callback(nil)
                     return
                 }
                 
                 self.current = UserAccount(user!)
+                Log.info("User \(self.current!.email) authentication data found"
+                         + " in keychain")
+                
                 callback(self.current)
             }
         )

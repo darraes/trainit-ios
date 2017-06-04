@@ -127,7 +127,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Your Workout Plan" id="bmv-VG-TWO">
-                        <barButtonItem key="leftBarButtonItem" title="Logout" id="h4Q-hm-dh5">
+                        <barButtonItem key="rightBarButtonItem" title="Logout" id="h4Q-hm-dh5">
                             <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <userDefinedRuntimeAttributes>
                                 <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
