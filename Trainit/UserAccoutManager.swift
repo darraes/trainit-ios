@@ -77,7 +77,7 @@ class UserAccountManager {
             Log.critical("Sign out called with no user logged in")
         }
         
-        self.current = nil
+        defer { self.current = nil }
         do {
             try Auth.auth().signOut()
             Log.info("User \(self.current!.email) signed out")

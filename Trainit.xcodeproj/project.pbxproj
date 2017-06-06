@@ -166,7 +166,7 @@
 				654FA20E1ED53F07008CB178 /* Models */,
 				654FA2161ED65112008CB178 /* Runtime */,
 				654FA20D1ED53EEB008CB178 /* UI */,
-				654FA2091ED3EDD9008CB178 /* Resources */,
+				654FA2091ED3EDD9008CB178 /* Supporting Files */,
 				654FA1E31ED3E4CD008CB178 /* AppDelegate.swift */,
 			);
 			path = Trainit;
@@ -201,14 +201,14 @@
 			name = Layouts;
 			sourceTree = "<group>";
 		};
-		654FA2091ED3EDD9008CB178 /* Resources */ = {
+		654FA2091ED3EDD9008CB178 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
 				654FA2031ED3E6AE008CB178 /* GoogleService-Info.plist */,
 				654FA1EA1ED3E4CD008CB178 /* Assets.xcassets */,
 				654FA1EF1ED3E4CD008CB178 /* Info.plist */,
 			);
-			name = Resources;
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		654FA20A1ED3EE7D008CB178 /* Controls */ = {

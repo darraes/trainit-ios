@@ -8,8 +8,8 @@
 
 import Foundation
 
-func synced(_ lock: Any, _ closure: () -> ()) {
+func synced<T>(_ lock: Any, _ closure: () -> T) -> T{
     objc_sync_enter(lock)
-    closure()
-    objc_sync_exit(lock)
+    defer { objc_sync_exit(lock) }
+    return closure()
 }

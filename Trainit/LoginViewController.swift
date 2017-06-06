@@ -20,19 +20,18 @@ class LoginViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        UserAccountManager.Instance.loggedUser(with:
-            { user in
-                if user != nil {
-                    self.successfulLogin()
-                }
-            }
-        )
-
+        
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        UserAccountManager.Instance.loggedUser(with:
+            { user in
+                if user != nil {
+                    self.successfulLogin()
+                }
+        })
     }
     
     override func didReceiveMemoryWarning() {

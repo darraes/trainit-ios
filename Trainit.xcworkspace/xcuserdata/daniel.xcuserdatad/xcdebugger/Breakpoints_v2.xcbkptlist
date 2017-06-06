@@ -22,11 +22,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Trainit/LoginViewController.swift"
-            timestampString = "518162043.458413"
+            timestampString = "518332981.294324"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "74"
-            endingLineNumber = "74"
+            startingLineNumber = "73"
+            endingLineNumber = "73"
             landmarkName = "signUpDidTouch(_:)"
             landmarkType = "7">
          </BreakpointContent>

@@ -31,7 +31,7 @@ class WorkoutManager {
     var workoutPlansRef : DatabaseReference?
     // Current instantiated workout
     var workoutPlan: WorkoutPlan?
-    // Activity workouts being read
+    // Workout exercise lists being observed
     var activeWorkoutObservers: [Workout: (ref: DatabaseReference, handle: DatabaseHandle)]
     // User's history
     var history: History?
@@ -52,8 +52,17 @@ class WorkoutManager {
         self.semaphore = DispatchGroup()
         
         self.semaphore!.enter()
-        self.fetchWorkoutPlan(with: { workoutPlan in
+        self.subscribeForPlan(with: { workoutPlan in
             onPlan(workoutPlan)
+            
+            // If history is loaded, those calls are most likely after view load
+            // and therefore we should also check for rollover
+            if self.history != nil {
+                if self.rolloverIfNecessary() {
+                    onRolling(self.workoutPlan!, self.history!)
+                }
+            }
+            
             if (self.semaphore != nil) {
                 self.semaphore!.leave()
             }
@@ -71,8 +80,7 @@ class WorkoutManager {
         
         // If it is a new week of training, rollover the plan
         self.semaphore!.notify(queue: .main) {
-            let isRolling = self.rolloverIfNecessary()
-            if isRolling {
+            if self.rolloverIfNecessary() {
                 onRolling(self.workoutPlan!, self.history!)
             }
         }
@@ -80,14 +88,14 @@ class WorkoutManager {
         self.semaphore = nil
     }
     
-    func fetchWorkoutPlan(with callback: @escaping WorkoutPlanCallback) {
+    private func subscribeForPlan(with callback: @escaping WorkoutPlanCallback) {
         let user = UserAccountManager.Instance.current!
         self.workoutPlansRef = Database.database().reference(
             withPath:  String(format: WorkoutManager.kCurrentPlanPathFmt,
                               user.uid))
         
         workoutPlansRef!.observe(.value, with: { snapshot in
-            Log.debug("Workout plan updated")
+            Log.debug("Workout plan updated to \(snapshot)")
             self.workoutPlan = WorkoutPlan(snapshot)
             
             //Return info to caller
@@ -95,7 +103,7 @@ class WorkoutManager {
         })
     }
     
-    func fetchHistory(with callback: @escaping HistoryCallback) {
+    private func fetchHistory(with callback: @escaping HistoryCallback) {
         let user = UserAccountManager.Instance.current!
         let historyRef = Database.database().reference(
             withPath:String(format: WorkoutManager.kHistoryPathFmt, user.uid))
@@ -112,38 +120,39 @@ class WorkoutManager {
         
     }
     
-    func rolloverIfNecessary() -> Bool {
-        if (self.workoutPlan == nil || self.history == nil) {
-            Log.error("Plan and/or history not loaded. Failing to rollover")
-            return false
-        }
-        
-        let plan = self.workoutPlan!
-        
-        if intervalInDays(for: plan.startDate, and: Date())
-                == WorkoutManager.kRolloverIntervalDays {
-            Log.info("Rolling over current plan")
-            
-            if (self.history != nil) {
-                let historyEntry = HistoryEntry(from: self.workoutPlan!)
-                history?.add(entry: historyEntry)
-                // Push to store
-                // TODO error handling
-                history?.save()
+    private func rolloverIfNecessary() -> Bool {
+        return synced(self) {
+            if (self.workoutPlan == nil || self.history == nil) {
+                Log.error("Plan and/or history not loaded. Failing to rollover")
+                return false
             }
             
-            // Rolling over writes the new plan on the same location therefore
-            // we copy the store reference
-            let newPlan = WorkoutPlan.reset(from: plan,
-                                            for: Date(),
-                                            with: plan.ref)
-            
-            // Push to store
-            // TODO error handling
-            newPlan.save()
-            return true
+            let plan = self.workoutPlan!
+            let interval = intervalInDays(for: plan.startDate, and: Date())
+            if (weekDay(for: Date()) == WeekDay.monday && interval > 0)
+                || interval > WorkoutManager.kRolloverIntervalDays - 1 {
+                Log.info("Rolling over current plan")
+                
+                // TODO rolling must be transactional
+                
+                let historyEntry = HistoryEntry(from: self.workoutPlan!)
+                self.history!.add(entry: historyEntry)
+                
+                // TODO error handling
+                self.history!.save()
+                
+                // Rolling over writes the new plan on the same location
+                // therefore we copy the store reference
+                let newPlan = WorkoutPlan.reset(from: plan,
+                                                for: Date(),
+                                                with: plan.ref)
+                
+                // TODO error handling
+                newPlan.save()
+                return true
+            }
+            return false
         }
-        return false
     }
     
     /**

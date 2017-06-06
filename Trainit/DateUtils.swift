@@ -8,6 +8,17 @@
 
 import Foundation
 
+enum WeekDay: Int
+{
+    case sunday = 1
+    case monday = 2
+    case tuesday = 3
+    case wednesday = 4
+    case thursday = 5
+    case friday = 6
+    case saturday = 7
+}
+
 func timeUtilStr(_ time: TimeUnit) -> String {
     switch time {
     case .second:
@@ -29,9 +40,10 @@ func dateStr(for date: Date) -> String {
     return fmt.string(from: date)
 }
 
-func weekDay(for date: Date) -> Int {
+func weekDay(for date: Date) -> WeekDay {
     let calendar = Calendar.current
-    return calendar.dateComponents([.weekday], from: date).weekday!
+    return WeekDay(
+        rawValue: calendar.dateComponents([.weekday], from: date).weekday!)!
 }
 
 func weekDayStr(for date: Date) -> String {
