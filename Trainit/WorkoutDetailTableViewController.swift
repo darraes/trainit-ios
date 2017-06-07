@@ -27,7 +27,8 @@ class WorkoutDetailTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        WorkoutManager.Instance.subscribe(for: self.workout!) { (exercises) in
+        WorkoutManager.Instance.listExercises(for: self.workout!)
+        { (exercises) in
             self.workoutExercises = exercises
             self.tableView.reloadData()
         }
@@ -37,7 +38,6 @@ class WorkoutDetailTableViewController: UITableViewController {
         super.willMove(toParentViewController: parent)
         self.navigationController?.navigationBar.barTintColor =
             getDefaultNavBarColor()
-        WorkoutManager.Instance.unsubscribe(for: self.workout!)
     }
     
     override func didReceiveMemoryWarning() {

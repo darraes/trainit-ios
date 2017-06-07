@@ -44,11 +44,30 @@ class WorkoutManager {
         
     }
     
+    /**
+     * Main method to get the workout plan and the workout history.
+     *
+     * This method adds an observer on the current workout plan and monitors any
+     * update made to it. It also monitors when the plan is rolling over.
+     *
+     * For the history, it does a single query and loads the history from the
+     * store since the rollover logic will update the in-memory history if
+     * necessary
+     *
+     * @onPlan      Called if the current plan was updated. Live callback and will
+     *              kept being called during life time of app
+     * @onHistory   Called when we fetch the current history. Called just once
+     * @onRollover  Called when the plan rolled over and a new plan and history
+                    are in effect
+     */
     func listen(onPlan: @escaping WorkoutPlanCallback,
                 onHistory: @escaping HistoryCallback,
                 onRolling: @escaping RollingCallback) {
         Log.debug("Listening for \(UserAccountManager.Instance.current!.email)")
         
+        // Semaphore is used to make sure that the very first call to
+        // rolloverIfNecessary: is done when both the plan and the history are
+        // already loaded.
         self.semaphore = DispatchGroup()
         
         self.semaphore!.enter()
@@ -63,6 +82,8 @@ class WorkoutManager {
                 }
             }
             
+            // The semaphore will only be active during the life of listen: and
+            // not on the further observe: callbacks therefore we must check
             if (self.semaphore != nil) {
                 self.semaphore!.leave()
             }
@@ -88,6 +109,11 @@ class WorkoutManager {
         self.semaphore = nil
     }
     
+    /**
+     * Subscribes the called to listen for changes on the current workout plan
+     *
+     * @callback   Returns the users workout plan - Called on every plan update
+     */
     private func subscribeForPlan(with callback: @escaping WorkoutPlanCallback) {
         let user = UserAccountManager.Instance.current!
         self.workoutPlansRef = Database.database().reference(
@@ -95,7 +121,7 @@ class WorkoutManager {
                               user.uid))
         
         workoutPlansRef!.observe(.value, with: { snapshot in
-            Log.debug("Workout plan updated to \(snapshot)")
+            Log.debug("Workout plan updated")
             self.workoutPlan = WorkoutPlan(snapshot)
             
             //Return info to caller
@@ -103,6 +129,11 @@ class WorkoutManager {
         })
     }
     
+    /**
+     * Does a single fetch of the users workout history
+     *
+     * @callback   Returns the users workout history
+     */
     private func fetchHistory(with callback: @escaping HistoryCallback) {
         let user = UserAccountManager.Instance.current!
         let historyRef = Database.database().reference(
@@ -120,6 +151,13 @@ class WorkoutManager {
         
     }
     
+    /**
+     * On a new week, the current's plan completions will be erased (roll over)
+     * and added to the users history.
+     * This process is the rollover so the user starts a new workout week
+     *
+     * @return    True if the rollover is happening. False otherwise
+     */
     private func rolloverIfNecessary() -> Bool {
         return synced(self) {
             if (self.workoutPlan == nil || self.history == nil) {
@@ -156,23 +194,28 @@ class WorkoutManager {
     }
     
     /**
-     * MARK: Workout and Exercise listing
+     * Saves the @workout into the store
      */
-    
     func save(_ workout: Workout) {
         Log.debug("Saving workout \(workout.id)")
         workout.save()
     }
     
-    func subscribe(for workout: Workout,
-                   with callback: @escaping ExerciseListCallback) {
+    /**
+     * Lists the exercises of a given workout
+     *
+     * @workout   Target workout
+     * @callback  Returns the workout'exercise list
+     */
+    func listExercises(for workout: Workout,
+                       with callback: @escaping ExerciseListCallback) {
         let user = UserAccountManager.Instance.current!
         let exercisesRef = Database.database().reference(
             withPath:  String(format: WorkoutManager.kExercisePathFmt,
                               user.uid,
                               workout.id))
         
-        let handle = exercisesRef.observe(.value, with: { snapshot in
+        exercisesRef.observeSingleEvent(of: .value, with: { snapshot in
             let listSnapshot = snapshot.childSnapshot(forPath: "list")
             var exercises: [Exercise] = []
             for exercise in listSnapshot.children {
@@ -180,14 +223,5 @@ class WorkoutManager {
             }
             callback(exercises)
         })
-        self.activeWorkoutObservers[workout] = (ref: exercisesRef,
-                                                handle: handle)
-    }
-    
-    func unsubscribe(for workout: Workout) {
-        if let dbPtr = activeWorkoutObservers[workout] {
-            dbPtr.ref.removeObserver(withHandle: dbPtr.handle)
-        }
-        self.activeWorkoutObservers.removeValue(forKey: workout)
     }
 }

@@ -12,6 +12,7 @@ import Firebase
 class History {
     var ref: DatabaseReference?
     var entries: [HistoryEntry]
+    private var isSorted = false
     
     init() {
         self.ref = nil
@@ -27,6 +28,7 @@ class History {
         for entry in snapshot.children {
             self.entries.append(HistoryEntry(entry as! DataSnapshot))
         }
+        self.sortLaterFirst()
     }
     
     func toAnyObject() -> Any {
@@ -50,12 +52,28 @@ class History {
     }
     
     func add(entry: HistoryEntry) {
-        self.entries.append(entry)
-        
-        // Rollover
-        // TODO make 10 configurable
-        if self.entries.count > 10 {
-            self.entries.remove(at: 0)
+        if !self.isSorted {
+            self.sortLaterFirst()
         }
+        
+        // Since the list is sorted, we can reduce it to find the index to
+        // insert the new element. This is O(n) and a binary search would be
+        // better
+        let idx = self.entries.reduce(0) {result, element in
+            element.weekStartDate > entry.weekStartDate ? result + 1 : result
+        }
+        
+        self.entries.insert(entry, at: idx)
+        // TODO make 10 configurable
+        while self.entries.count > 10 {
+            self.entries.remove(at: self.entries.count - 1)
+        }
+    }
+    
+    private func sortLaterFirst() {
+        isSorted = true
+        self.entries.sort(by:{ (left, right) in
+            return left.weekStartDate > right.weekStartDate
+        })
     }
 }
