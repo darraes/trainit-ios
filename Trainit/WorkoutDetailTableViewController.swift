@@ -14,6 +14,8 @@ class WorkoutDetailTableViewController: UITableViewController {
     var activity: Activity?
     var workoutExercises: [Exercise]!
     
+    static let kDetailCellHeight: CGFloat = 50.0
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.activity = ActivityManager.Instance.activity(by: self.workout!.type)
@@ -40,27 +42,20 @@ class WorkoutDetailTableViewController: UITableViewController {
             ColorUtils.getDefaultNavBarColor()
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     // MARK: - Table view data source
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
     
     override func tableView(_ tableView: UITableView,
                             numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return self.workoutExercises.count
     }
     
     override func tableView(_ tableView: UITableView,
                             heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 50.0
+        return WorkoutDetailTableViewController.kDetailCellHeight
     }
     
     

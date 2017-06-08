@@ -28,7 +28,7 @@ class WorkoutTableViewCell: UITableViewCell {
             for: activity).cgColor
         
         self.completedLabel.text =
-        "\(workout.completedSessionsCount())/\(workout.sessionsPerWeek)"
+            "\(workout.completedSessionsCount())/\(workout.sessionsPerWeek)"
         
         var completionsStr: String = ""
         for (idx, completion) in workout.completions.enumerated() {

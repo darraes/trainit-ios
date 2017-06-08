@@ -9,32 +9,31 @@
 import Foundation
 import Firebase
 
-class WorkoutPlan {
+class WorkoutPlan : DBWritable {
     let id: String!
     let startDate: Date
     private(set) var workouts: [Workout]
-    
-    // Actual pointer to FIRDatabase store for plan
-    private(set) var ref: DatabaseReference?
     
     init(_ id : String, _ startDate: Date) {
         self.id = id
         self.startDate = startDate
         self.workouts = []
-        self.ref = nil
+        super.init()
     }
     
     /**
      * Snapshot must point to workout-plans/{user-id}/{plan}
      */
     init(_ snapshot: DataSnapshot) {
-        self.ref = snapshot.ref
         
         let plan = snapshot.value as! [String: AnyObject]
         self.id = plan["id"] as! String
         self.startDate = toDate(for: plan["start-date"] as! String)
-        
         self.workouts = []
+        super.init()
+        
+        self.ref = snapshot.ref
+        
         let workouts = snapshot.childSnapshot(forPath: "workouts")
         for workout in workouts.children {
             let myWorkout = Workout(workout as! DataSnapshot, owner: self)
@@ -58,7 +57,7 @@ class WorkoutPlan {
         return newPlan
     }
     
-    func toAnyObject() -> Any {
+    override func toAnyObject() -> Any {
         var myWorkouts: [Any] = []
         for workout in self.workouts{
             myWorkouts.append(workout.toAnyObject())
@@ -70,18 +69,6 @@ class WorkoutPlan {
             "start-date": start,
             "id": self.id
         ]
-    }
-    
-    func isAttached() -> Bool {
-        return self.ref != nil
-    }
-    
-    func attach(ref: DatabaseReference) {
-        self.ref = ref
-    }
-    
-    func save() {
-        self.ref!.setValue(self.toAnyObject())
     }
 
     func workoutCount() -> Int {

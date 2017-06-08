@@ -9,29 +9,34 @@
 import Foundation
 import Firebase
 
-class History {
-    var ref: DatabaseReference?
+class History : DBWritable {
     var entries: [HistoryEntry]
     private var isSorted = false
     
-    init() {
-        self.ref = nil
+    override init() {
         self.entries = []
+        super.init()
     }
     
     /**
      * Snapshot must point to history/{user-id}
      */
     init(_ snapshot: DataSnapshot) {
-        self.ref = snapshot.ref
         self.entries = []
+        super.init()
+        
+        self.ref = snapshot.ref
         for entry in snapshot.children {
             self.entries.append(HistoryEntry(entry as! DataSnapshot))
         }
-        self.sortLaterFirst()
+        
+        self.sortNewestFirst()
     }
     
-    func toAnyObject() -> Any {
+    /**
+     * Serialization to Any
+     */
+    override func toAnyObject() -> Any {
         var result: [String:Any] = [:]
         for entry in self.entries {
             result[dateStr(for: entry.weekStartDate)] = entry.toAnyObject()
@@ -39,21 +44,12 @@ class History {
         return result
     }
     
-    func isAttached() -> Bool {
-        return self.ref != nil
-    }
-    
-    func attach(ref: DatabaseReference) {
-        self.ref = ref
-    }
-    
-    func save() {
-        self.ref!.setValue(self.toAnyObject())
-    }
-    
+    /**
+     * Adds a workout history entry as part of the history
+     */
     func add(entry: HistoryEntry) {
         if !self.isSorted {
-            self.sortLaterFirst()
+            self.sortNewestFirst()
         }
         
         // Since the list is sorted, we can reduce it to find the index to
@@ -70,7 +66,10 @@ class History {
         }
     }
     
-    private func sortLaterFirst() {
+    /**
+     * Sorts the entries leaving the newest first
+     */
+    private func sortNewestFirst() {
         isSorted = true
         self.entries.sort(by:{ (left, right) in
             return left.weekStartDate > right.weekStartDate
