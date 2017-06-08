@@ -23,20 +23,26 @@ enum TimeUnit: String
 }
 
 class Exercise {
-    // TODO add activity type
     let type: ExerciseType
+    let activityType: String
     let title: String
     let routine: Routine
     let notes: String?
     
-    init (type: ExerciseType, title: String, notes: String, routine: Routine) {
+    init (type: ExerciseType,
+          activityType: String,
+          title: String,
+          notes: String,
+          routine: Routine) {
         self.type = type
+        self.activityType = activityType
         self.title = title
         self.notes = notes
         self.routine = routine
     }
     
-    init(_ snapshot: DataSnapshot) {
+    init(_ snapshot: DataSnapshot, for activityType: String) {
+        self.activityType = activityType
         let exercise = snapshot.value as! [String: AnyObject]
         self.title = exercise["title"] as! String
         self.notes = exercise["notes"] as? String

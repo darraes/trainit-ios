@@ -224,10 +224,13 @@ class WorkoutManager {
         exercisesRef.observeSingleEvent(
             of: .value,
             with: { snapshot in
+                let exerciseWrapper = snapshot.value as! [String: AnyObject]
+                let activityType = exerciseWrapper["activity-type"] as! String
                 let listSnapshot = snapshot.childSnapshot(forPath: "list")
                 var exercises: [Exercise] = []
                 for exercise in listSnapshot.children {
-                    exercises.append(Exercise(exercise as! DataSnapshot))
+                    exercises.append(Exercise(
+                        exercise as! DataSnapshot, for: activityType))
                 }
                 callback(exercises)
         })
