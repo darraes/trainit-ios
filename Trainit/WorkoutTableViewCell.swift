@@ -24,7 +24,8 @@ class WorkoutTableViewCell: UITableViewCell {
         self.workoutImage.image = UIImage(named: activity.icon)
         self.borderView.layer.borderWidth = 1.0
         self.borderView.layer.cornerRadius = 23.0
-        self.borderView.layer.borderColor = getColor(for: activity).cgColor
+        self.borderView.layer.borderColor = ColorUtils.getColor(
+            for: activity).cgColor
         
         self.completedLabel.text =
         "\(workout.completedSessionsCount())/\(workout.sessionsPerWeek)"

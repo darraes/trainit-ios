@@ -18,7 +18,7 @@ class ExerciseTableViewCell: UITableViewCell {
     
     func configure(for exercise: Exercise, activity: Activity) {
         self.titleLabel.text = exercise.title
-        self.colorBar.backgroundColor = getColor(for: activity)
+        self.colorBar.backgroundColor = ColorUtils.getColor(for: activity)
         self.routineInfoLabel.text = exercise.infoStr()
         self.routineTypeLabel.text = exercise.typeStr()
         self.notesLabel.text = exercise.notes

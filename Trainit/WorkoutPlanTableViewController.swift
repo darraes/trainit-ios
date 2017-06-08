@@ -32,7 +32,7 @@ class WorkoutPlanTableViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.barTintColor =
-            getDefaultNavBarColor()
+            ColorUtils.getDefaultNavBarColor()
         self.navigationController?.navigationBar.tintColor = UIColor.white
     }
     
@@ -191,7 +191,7 @@ class WorkoutPlanTableViewController: UITableViewController {
                 workout.completeOneSession()
                 WorkoutManager.Instance.save(workout)
             }
-            completeAction.backgroundColor = getColor(for: activity)
+            completeAction.backgroundColor = ColorUtils.getColor(for: activity)
             
             // Un-marks the completion of one session of the workout
             let undoAction = UITableViewRowAction(style: .normal,
@@ -235,7 +235,7 @@ class WorkoutPlanTableViewController: UITableViewController {
             + " \(progress.total) -"
             + " \(progressPct)%"
         
-        progressLabel.backgroundColor = grayScale(0.9)
+        progressLabel.backgroundColor = ColorUtils.grayScale(0.9)
         
         return progressLabel
     }

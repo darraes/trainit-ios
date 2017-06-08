@@ -41,7 +41,7 @@ class WorkoutPlan {
             self.workouts.append(myWorkout)
         }
 
-        sortOnCompletion()
+        sortOnCompletions()
     }
     
     static func reset(from plan: WorkoutPlan,
@@ -51,8 +51,8 @@ class WorkoutPlan {
         newPlan.ref = ref
         
         for workout in plan.workouts {
-            let newWorkout = Workout.reset(from: workout, owner: newPlan)
-            newPlan.workouts.append(newWorkout)
+            newPlan.workouts.append(
+                Workout.reset(from: workout, owner: newPlan))
         }
 
         return newPlan
@@ -125,7 +125,7 @@ class WorkoutPlan {
         return (completed: completed, total: total)
     }
     
-    private func sortOnCompletion() {
+    private func sortOnCompletions() {
         self.workouts.sort(by:{ (left, right) in
             let leftDelta = left.sessionsPerWeek - left.completedSessionsCount()
             let rightDelta = right.sessionsPerWeek

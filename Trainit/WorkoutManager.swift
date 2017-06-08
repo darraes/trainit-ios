@@ -58,12 +58,13 @@ class WorkoutManager {
      *              kept being called during life time of app
      * @onHistory   Called when we fetch the current history. Called just once
      * @onRollover  Called when the plan rolled over and a new plan and history
-                    are in effect
+     are in effect
      */
     func listen(onPlan: @escaping WorkoutPlanCallback,
                 onHistory: @escaping HistoryCallback,
                 onRolling: @escaping RollingCallback) {
-        Log.debug("Listening for \(UserAccountManager.Instance.current!.email)")
+        Log.debug("Listening for user "
+            + "\(UserAccountManager.Instance.current!.email)")
         
         // Semaphore is used to make sure that the very first call to
         // rolloverIfNecessary: is done when both the plan and the history are
@@ -168,7 +169,8 @@ class WorkoutManager {
             let plan = self.workoutPlan!
             let interval = intervalInDays(for: plan.startDate, and: Date())
             if (weekDay(for: Date()) == WeekDay.monday && interval > 0)
-                || interval > WorkoutManager.kRolloverIntervalDays - 1 {
+                || interval > WorkoutManager.kRolloverIntervalDays - 1
+            {
                 Log.info("Rolling over current plan")
                 
                 // TODO rolling must be transactional
@@ -177,6 +179,7 @@ class WorkoutManager {
                 self.history!.add(entry: historyEntry)
                 
                 // TODO error handling
+                Log.debug("Saving updated history")
                 self.history!.save()
                 
                 // Rolling over writes the new plan on the same location
@@ -186,6 +189,7 @@ class WorkoutManager {
                                                 with: plan.ref)
                 
                 // TODO error handling
+                Log.debug("Saving fresh workout plan")
                 newPlan.save()
                 return true
             }
@@ -209,19 +213,23 @@ class WorkoutManager {
      */
     func listExercises(for workout: Workout,
                        with callback: @escaping ExerciseListCallback) {
+        Log.debug("Listing exercises for workout \(workout.id)")
+        
         let user = UserAccountManager.Instance.current!
         let exercisesRef = Database.database().reference(
             withPath:  String(format: WorkoutManager.kExercisePathFmt,
                               user.uid,
                               workout.id))
         
-        exercisesRef.observeSingleEvent(of: .value, with: { snapshot in
-            let listSnapshot = snapshot.childSnapshot(forPath: "list")
-            var exercises: [Exercise] = []
-            for exercise in listSnapshot.children {
-                exercises.append(Exercise(exercise as! DataSnapshot))
-            }
-            callback(exercises)
+        exercisesRef.observeSingleEvent(
+            of: .value,
+            with: { snapshot in
+                let listSnapshot = snapshot.childSnapshot(forPath: "list")
+                var exercises: [Exercise] = []
+                for exercise in listSnapshot.children {
+                    exercises.append(Exercise(exercise as! DataSnapshot))
+                }
+                callback(exercises)
         })
     }
 }

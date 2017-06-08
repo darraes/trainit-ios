@@ -21,7 +21,7 @@ class WorkoutDetailTableViewController: UITableViewController {
         
         self.navigationItem.title = activity!.title
         self.navigationController?.navigationBar.barTintColor =
-            getColor(for: self.activity!)
+            ColorUtils.getColor(for: self.activity!)
     }
     
     override func viewDidLoad() {
@@ -37,7 +37,7 @@ class WorkoutDetailTableViewController: UITableViewController {
     override func willMove(toParentViewController parent: UIViewController?) {
         super.willMove(toParentViewController: parent)
         self.navigationController?.navigationBar.barTintColor =
-            getDefaultNavBarColor()
+            ColorUtils.getDefaultNavBarColor()
     }
     
     override func didReceiveMemoryWarning() {

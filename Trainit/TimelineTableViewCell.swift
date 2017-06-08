@@ -103,8 +103,8 @@ class TimelineTableViewCell: UITableViewCell {
         
         label.layer.borderWidth = 1.0
         label.layer.cornerRadius = 3.0
-        label.layer.backgroundColor = grayScale(0.97).cgColor
-        label.layer.borderColor = grayScale(0.88).cgColor
+        label.layer.backgroundColor = ColorUtils.grayScale(0.97).cgColor
+        label.layer.borderColor = ColorUtils.grayScale(0.88).cgColor
         
         return label
     }
