@@ -22,7 +22,11 @@ enum TimeUnit: String
     case minute = "min"
 }
 
-class Exercise {
+class ExerciseBase {
+    
+}
+
+class Exercise : ExerciseBase {
     let type: ExerciseType
     let activityType: String
     let title: String

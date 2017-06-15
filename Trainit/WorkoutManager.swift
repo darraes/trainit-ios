@@ -105,9 +105,9 @@ class WorkoutManager {
             if self.rolloverIfNecessary() {
                 onRolling(self.workoutPlan!, self.history!)
             }
+            self.semaphore = nil
         }
         
-        self.semaphore = nil
     }
     
     /**
@@ -166,9 +166,11 @@ class WorkoutManager {
                 return false
             }
             
+            let now = Date()
             let plan = self.workoutPlan!
             let interval = intervalInDays(for: plan.startDate, and: Date())
-            if (weekDay(for: Date()) == WeekDay.monday && interval > 0)
+
+            if (weekDay(for: now) == WeekDay.monday && interval > 0)
                 || interval > WorkoutManager.kRolloverIntervalDays - 1
             {
                 Log.info("Rolling over current plan")
