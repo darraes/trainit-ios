@@ -30,8 +30,8 @@ class WorkoutDetailTableViewController: UITableViewController {
         super.viewDidLoad()
         
         WorkoutManager.Instance.listExercises(for: self.workout!)
-        { (exercises) in
-            self.workoutExercises = exercises
+        { (exerciseList) in
+            self.workoutExercises = exerciseList.exercises
             self.tableView.reloadData()
         }
     }

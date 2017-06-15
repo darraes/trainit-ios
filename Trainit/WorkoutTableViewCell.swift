@@ -20,7 +20,9 @@ class WorkoutTableViewCell: UITableViewCell {
     func configure(for workout: Workout) {
         let activity = ActivityManager.Instance.activity(by: workout.type)
         
-        self.workoutLabel.text = activity.title
+        self.workoutLabel.text = (workout.title != nil)
+            ? workout.title
+            : activity.title
         self.workoutImage.image = UIImage(named: activity.icon)
         self.borderView.layer.borderWidth = 1.0
         self.borderView.layer.cornerRadius = 23.0

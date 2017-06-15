@@ -9,7 +9,7 @@
 import Foundation
 import Firebase
 
-enum ExerciseType: String
+enum RoutineType: String
 {
     case repetition = "rep"
     case time = "time"
@@ -22,23 +22,19 @@ enum TimeUnit: String
     case minute = "min"
 }
 
-class ExerciseBase {
-    
-}
-
-class Exercise : ExerciseBase {
-    let type: ExerciseType
+class Exercise {
+    let routineType: RoutineType
     let activityType: String
     let title: String
     let routine: Routine
     let notes: String?
     
-    init (type: ExerciseType,
+    init (routineType: RoutineType,
           activityType: String,
           title: String,
           notes: String,
           routine: Routine) {
-        self.type = type
+        self.routineType = routineType
         self.activityType = activityType
         self.title = title
         self.notes = notes
@@ -50,11 +46,11 @@ class Exercise : ExerciseBase {
         let exercise = snapshot.value as! [String: AnyObject]
         self.title = exercise["title"] as! String
         self.notes = exercise["notes"] as? String
-        self.type = ExerciseType(rawValue: exercise["type"] as! String)!
-        if (type == .repetition) {
+        self.routineType = RoutineType(rawValue: exercise["type"] as! String)!
+        if (self.routineType == .repetition) {
             self.routine = RepetitionRoutine(
                 snapshot.childSnapshot(forPath: "routine"))
-        } else if (type == .timed_repetition) {
+        } else if (self.routineType == .timed_repetition) {
             self.routine = TimedRepetitionRoutine(
                 snapshot.childSnapshot(forPath: "routine"))
         } else {

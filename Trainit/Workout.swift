@@ -12,6 +12,7 @@ import Firebase
 class Workout : Hashable {
     
     let id: String
+    let title: String?
     let type: String
     let sessionsPerWeek: Int
     var completions: [Date]
@@ -19,10 +20,12 @@ class Workout : Hashable {
     
     init(owner plan: WorkoutPlan,
          _ id: String,
+         _ title: String?,
          _ type : String,
          _ sessionPerWeek: Int) {
         self.plan = plan
         self.id = id
+        self.title = title
         self.type = type
         self.sessionsPerWeek = sessionPerWeek
         self.completions = []
@@ -37,6 +40,7 @@ class Workout : Hashable {
         self.plan = plan
         self.id = workout["id"] as! String
         self.type = workout["type"] as! String
+        self.title = workout["title"] as? String
         self.sessionsPerWeek = workout["sessions_per_week"] as! Int
         self.completions = []
         
@@ -55,6 +59,7 @@ class Workout : Hashable {
                       owner plan: WorkoutPlan) -> Workout {
         return Workout(owner: plan,
                        workout.id,
+                       workout.title,
                        workout.type,
                        workout.sessionsPerWeek)
     }
@@ -87,12 +92,18 @@ class Workout : Hashable {
         for completion in self.completions {
             myCompletions.append(dateStr(for: completion))
         }
-        return [
+        var anyWorkout: [String: Any] = [
             "id": self.id,
             "type": self.type,
             "sessions_per_week": self.sessionsPerWeek,
             "completions": myCompletions
         ]
+        
+        if self.title != nil {
+            anyWorkout["title"] = self.title
+        }
+        
+        return anyWorkout
     }
     
     /**

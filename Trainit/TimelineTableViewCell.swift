@@ -79,9 +79,7 @@ class TimelineTableViewCell: UITableViewCell {
             var missing = maxCompletionsPerDay
             if workoutPerDay[day] != nil {
                 for workout in workoutPerDay[day]! {
-                    let activity = ActivityManager.Instance.activity(
-                        by: workout.type)
-                    tagView.addArrangedSubview(createTag(for: activity))
+                    tagView.addArrangedSubview(createTag(for: workout))
                     missing -= 1
                 }
             }
@@ -94,10 +92,13 @@ class TimelineTableViewCell: UITableViewCell {
         }
     }
     
-    private func createTag(for activity: Activity) -> UILabel {
+    private func createTag(for workout: Workout) -> UILabel {
+        let activity = ActivityManager.Instance.activity(
+            by: workout.type)
+        
         let label = UILabel()
         
-        label.text = activity.shortName
+        label.text = activity.shortName // TODO workout title
         label.font = UIFont(name: "Helvetica", size: 9)
         label.textAlignment = .center
         

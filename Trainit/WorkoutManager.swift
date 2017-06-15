@@ -9,7 +9,7 @@
 import Foundation
 import Firebase
 
-typealias ExerciseListCallback = ([Exercise]) -> Void
+typealias ExerciseListCallback = (ExerciseList) -> Void
 typealias RollingCallback = (WorkoutPlan, History) -> Void
 typealias WorkoutPlanCallback = (WorkoutPlan) -> Void
 typealias HistoryCallback = (History) -> Void
@@ -226,15 +226,12 @@ class WorkoutManager {
         exercisesRef.observeSingleEvent(
             of: .value,
             with: { snapshot in
-                let exerciseWrapper = snapshot.value as! [String: AnyObject]
-                let activityType = exerciseWrapper["activity-type"] as! String
-                let listSnapshot = snapshot.childSnapshot(forPath: "list")
-                var exercises: [Exercise] = []
-                for exercise in listSnapshot.children {
-                    exercises.append(Exercise(
-                        exercise as! DataSnapshot, for: activityType))
+                if !snapshot.exists() {
+                    return
                 }
-                callback(exercises)
+                
+                let exerciseList = ExerciseList(snapshot)
+                callback(exerciseList)
         })
     }
 }
